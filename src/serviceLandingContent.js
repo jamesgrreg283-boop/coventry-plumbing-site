@@ -34,7 +34,7 @@ export const SERVICE_LANDINGS = {
   "/emergency-plumber-coventry": {
     h1Before: "Emergency Plumber in ",
     h1Accent: "Coventry",
-    h1After: " – 24/7 Fast Response TEST",
+    h1After: " – 24/7 Fast Response",
     whenNeedBullets: [
       "Burst pipes and sudden water loss",
       "Major leaks and urgent water damage",
