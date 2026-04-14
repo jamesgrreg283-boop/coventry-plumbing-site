@@ -6,7 +6,7 @@
 export const EMERGENCY_PLUMBER_FAQ = [
   {
     q: "How quickly can a plumber get to me in Coventry?",
-    a: "We aim to connect you with a local engineer as quickly as possible. Many urgent Coventry call-outs are attended within 30–60 minutes, but timings depend on your postcode, time of day, traffic, and engineer availability.",
+    a: "We aim to dispatch a local vetted plumber as quickly as possible. Many urgent Coventry call-outs are attended within 30–60 minutes, but timings depend on your postcode, time of day, traffic, and live availability.",
   },
   {
     q: "Do you cover my postcode?",
@@ -18,23 +18,23 @@ export const EMERGENCY_PLUMBER_FAQ = [
   },
   {
     q: "Can you help with burst pipes or boiler issues?",
-    a: "Yes. Emergency plumbing Coventry enquiries include burst pipes, heavy leaks, blocked drains, overflowing toilets, no hot water, and boiler breakdowns. Where gas work is needed, we connect enquiries to appropriately qualified engineers.",
+    a: "Yes. Emergency plumbing Coventry requests include burst pipes, heavy leaks, blocked drains, overflowing toilets, no hot water, and boiler breakdowns. Where gas work is needed, we dispatch appropriately qualified plumbers.",
   },
   {
     q: "What if I need urgent help at night?",
-    a: "You can contact us 24/7. Nights, weekends, and bank holidays are common times for urgent plumber Coventry requests, and we will route your enquiry based on who is available locally.",
+    a: "You can contact us 24/7. Nights, weekends, and bank holidays are common times for urgent plumber Coventry requests, and we dispatch based on who is available locally.",
   },
   {
     q: "How does the process work after I contact you?",
-    a: "You call or submit details, we review the issue and postcode, then we pass the enquiry to a relevant local engineer. The engineer contacts you directly to confirm availability, expected arrival time, and pricing before any work begins.",
+    a: "You call or submit details, we review the issue and postcode, then dispatch a local vetted plumber. The plumber confirms availability, expected arrival time, and pricing before any work begins.",
   },
 ];
 
 export const SERVICE_LANDINGS = {
   "/emergency-plumber-coventry": {
-    h1Before: "Emergency Plumber in ",
-    h1Accent: "Coventry",
-    h1After: " – 24/7 Fast Response TEST",
+    h1Before: "Emergency Plumber Coventry – 24/7 Callouts in Under ",
+    h1Accent: "60 Minutes",
+    h1After: "",
     whenNeedBullets: [
       "Burst pipes and sudden water loss",
       "Major leaks and urgent water damage",
@@ -42,13 +42,13 @@ export const SERVICE_LANDINGS = {
       "No hot water or no heating",
       "Boiler breakdowns and pressure failures",
     ],
-    fastResponseBody: "If you need an emergency plumber Coventry residents can reach day or night, this page is built for urgent situations only. We cover Coventry neighbourhoods including City Centre, Earlsdon, Stoke, Binley, Walsgrave, Canley, Tile Hill, Allesley, Holbrooks and Cheylesmore, with regular routing across CV1, CV2, CV3, CV4, CV5 and CV6. For urgent plumber Coventry enquiries, we focus on quick triage, clear communication, and fast contact with a local independent engineer.",
+    fastResponseBody: "If you need an emergency plumber Coventry residents can call day or night, this page is built for urgent situations only. We dispatch local vetted plumbers across City Centre, Earlsdon, Stoke, Binley, Walsgrave, Canley, Tile Hill, Allesley, Holbrooks and Cheylesmore, with regular coverage across CV1, CV2, CV3, CV4, CV5 and CV6. For urgent plumber Coventry jobs, we focus on quick triage, clear communication, and fast local dispatch.",
     whyChooseBullets: [
       "Emergency plumbing Coventry focus — this page is for urgent faults, not routine maintenance",
       "24 hour plumber Coventry enquiry handling with local postcode routing",
-      "Independent engineers contacted quickly based on issue type and location",
-      "Transparent pricing — the attending engineer confirms costs before work starts",
-      "Introducer model kept clear: we connect you, the engineer carries out the work",
+      "Local vetted plumbers dispatched quickly based on issue type and location",
+      "Average arrival target: 30–60 minutes when local capacity allows",
+      "Transparent pricing — the attending plumber confirms costs before work starts",
     ],
     emergencyCtas: [
       { headline: "Call now for immediate help", subline: "Speak directly about your Coventry emergency — available 24/7." },
@@ -57,9 +57,9 @@ export const SERVICE_LANDINGS = {
     paragraphs: [
       "When you search for an emergency plumber Coventry households can rely on, speed and clarity matter. Urgent faults in CV1, CV2, CV3, CV4, CV5 and CV6 can escalate quickly, especially in older terraces, flats with shared pipe routes, and family homes where one failure affects multiple rooms. This page is dedicated to emergency plumbing Coventry support so you can act quickly without guessing what to do next.",
       "Common urgent jobs include burst pipes, major leaks, blocked drains, overflowing toilets, no hot water, and boiler breakdowns. These issues can lead to fast water damage, hygiene problems, and loss of heating if left too long. If water is actively escaping, ceilings are staining, or drainage is backing up through fixtures, it is usually best to call immediately and isolate water if safe to do so.",
-      "Not every job has the same urgency. A small drip under a sink may be less urgent than a burst feed pipe, an overflowing toilet with no second WC, or a complete loss of hot water in winter. If you are unsure, treat the problem as urgent and explain the symptoms clearly. We can then route your urgent plumber Coventry enquiry to a local independent engineer with the right availability.",
+      "Not every job has the same urgency. A small drip under a sink may be less urgent than a burst feed pipe, an overflowing toilet with no second WC, or a complete loss of hot water in winter. If you are unsure, treat the problem as urgent and explain the symptoms clearly. We then dispatch a local vetted plumber with the right availability.",
       "Coverage is local and practical across Coventry neighbourhoods including City Centre, Earlsdon, Stoke, Binley, Walsgrave, Canley, Tile Hill, Allesley, Holbrooks and Cheylesmore, plus surrounding areas when engineer schedules allow. If your issue is linked to heating, drains, or leaks, you can also view related local pages for boiler repair, blocked drain support, and leak repair while still using this emergency route for immediate help.",
-      "What happens after you contact us is straightforward: first, you call or submit details; second, the issue and postcode are reviewed; third, a relevant local engineer is contacted; and fourth, the engineer confirms availability, arrival expectations, and pricing before work begins. coventryplumbing247 is an introducer, not a plumbing contractor, so your service agreement is always with the engineer who attends.",
+      "What happens after you contact us is straightforward: first, you call or submit details; second, the issue and postcode are reviewed; third, a relevant local plumber is dispatched; and fourth, the attending plumber confirms availability, arrival expectations, and pricing before work begins.",
     ],
     serviceListItems: [
       "Burst pipe emergencies and urgent isolation support",
@@ -67,7 +67,7 @@ export const SERVICE_LANDINGS = {
       "Blocked drains, backed-up waste, and overflowing toilets",
       "No hot water, no heating, and boiler fault escalation",
       "Out-of-hours emergency plumbing across Coventry postcodes",
-      "Routing to Gas Safe registered engineers where required",
+      "Routing to Gas Safe registered plumbers where required",
     ],
     relatedServices: [
       { label: "Boiler repair Coventry", path: "/boiler-repair-coventry" },
@@ -77,7 +77,7 @@ export const SERVICE_LANDINGS = {
     trustPoints: [
       { title: "Emergency-only intent", desc: "This page is written for urgent plumbing faults in Coventry, with practical guidance for immediate action." },
       { title: "Local Coventry coverage", desc: "Area references include key neighbourhoods and CV postcodes to reflect real local routing patterns." },
-      { title: "Clear next steps", desc: "You get a simple process from enquiry to engineer callback, with pricing confirmed before work starts." },
+      { title: "Clear next steps", desc: "You get a simple process from enquiry to plumber callback, with pricing confirmed before work starts." },
     ],
   },
   "/boiler-repair-coventry": {

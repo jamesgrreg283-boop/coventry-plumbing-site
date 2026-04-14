@@ -58,7 +58,7 @@ const EMERGENCY_SERVICES = [
     alt: "Plumber working under a kitchen sink",
     icon: "🔧",
     title: "Pipe repair & replacement",
-    desc: "Fast local help for damaged, leaking, or frozen pipes. We connect you with engineers who work to limit water damage and get your plumbing back in order.",
+    desc: "Fast local help for damaged, leaking, or frozen pipes. We dispatch local vetted plumbers to limit water damage and get your plumbing back in order.",
     path: "/leak-repair-coventry",
   },
   {
@@ -66,7 +66,7 @@ const EMERGENCY_SERVICES = [
     alt: "Engineer inspecting a boiler",
     icon: "🔥",
     title: "Boiler repairs & servicing",
-    desc: "Urgent heating and hot water faults. We connect you with Gas Safe registered engineers where required.",
+    desc: "Urgent heating and hot water faults. We dispatch Gas Safe registered plumbers where required.",
     path: "/boiler-repair-coventry",
   },
   {
@@ -74,7 +74,7 @@ const EMERGENCY_SERVICES = [
     alt: "Plumber working on pipework and tools",
     icon: "🚿",
     title: "Drain & blockage clearance",
-    desc: "Blocked drains, toilets, and sinks. Get connected with local engineers for high-pressure jetting and clearance with as little disruption as possible.",
+    desc: "Blocked drains, toilets, and sinks. We dispatch local vetted plumbers for high-pressure jetting and clearance with as little disruption as possible.",
     path: "/blocked-drain-coventry",
   },
   {
@@ -82,7 +82,7 @@ const EMERGENCY_SERVICES = [
     alt: "Plumber repairing copper pipework",
     icon: "💧",
     title: "Leak detection & repair",
-    desc: "Visible leaks and urgent damp or water damage. We help you reach engineers who can locate and repair leaks before bills and damage mount.",
+    desc: "Visible leaks and urgent damp or water damage. We dispatch local vetted plumbers who can locate and repair leaks before bills and damage mount.",
     path: "/leak-repair-coventry",
   },
 ];
@@ -108,10 +108,10 @@ const STEPS = [
 ];
 
 const FAQS = [
-  { q: "How quickly can an engineer get to me?", a: "For emergencies, we aim to connect you with a local Coventry engineer within minutes. Response times vary, but many urgent call-outs are attended within 30–60 minutes depending on your location, time of day, and engineer availability." },
+  { q: "How quickly can a plumber get to me?", a: "For emergencies, we aim to dispatch a local vetted plumber within minutes. Response times vary, but many urgent call-outs are attended within 30–60 minutes depending on your location, time of day, and live plumber availability." },
   { q: "Do you cover my area?", a: "We cover all Coventry postcodes including CV1, CV2, CV3, CV4, CV5, CV6, CV7, CV8 and surrounding areas. If you're unsure, submit your postcode in the form and we'll confirm whether we can help." },
   { q: "Is there a call-out fee?", a: "Call-out fees and minimum charges depend on the engineer and the type of job. Your engineer will explain any costs before work begins — always confirm pricing on the phone or on site." },
-  { q: "Do you connect customers with Gas Safe engineers?", a: "Yes. We connect you with Gas Safe registered engineers where required, and all engineers in our network are vetted and insured." },
+  { q: "Do you dispatch Gas Safe plumbers?", a: "Yes. We dispatch Gas Safe registered plumbers where required, and all plumbers in our local network are vetted and insured." },
   { q: "Can I use this service if I'm a tenant?", a: "Absolutely. We work with homeowners, tenants, and landlords. If you're renting, we'd recommend notifying your landlord at the same time — but for emergencies, just contact us first." },
   { q: "What if my issue isn't listed?", a: "No problem — just select 'Other plumbing issue' in the form and describe your problem. We handle all plumbing and heating issues, big or small." },
 ];
@@ -127,11 +127,11 @@ const SERVICE_PAGES = {
   },
   "/emergency-plumber-coventry": {
     title: "Emergency Plumber Coventry | 24 Hour Urgent Plumbing Help | coventryplumbing247",
-    description: "Need an emergency plumber Coventry homeowners can call 24/7? We connect urgent plumbing enquiries for burst pipes, leaks, blocked drains, boiler breakdowns and no hot water across Coventry.",
+    description: "Need an emergency plumber Coventry homeowners can call 24/7? We dispatch local vetted plumbers for burst pipes, leaks, blocked drains, boiler breakdowns and no hot water across Coventry.",
     h1Prefix: "24 Hour Emergency",
     h1Highlight: "Plumber Coventry",
     h1Suffix: "Rapid Local Callouts",
-    intro: "Need emergency plumbing Coventry support right now? We connect urgent plumber Coventry enquiries with local, vetted independent engineers for burst pipes, major leaks, drainage failures, no hot water and boiler breakdowns — day or night across Coventry neighbourhoods.",
+    intro: "Need emergency plumbing Coventry support right now? We dispatch local vetted plumbers for burst pipes, major leaks, drainage failures, no hot water and boiler breakdowns — day or night across Coventry neighbourhoods.",
   },
   "/boiler-repair-coventry": {
     title: "Boiler Repair Coventry | No Heat or Hot Water | coventryplumbing247",
@@ -209,6 +209,7 @@ function FaqItem({ q, a }) {
 
 function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
   if (!landing) return null;
+  const isEmergencyPage = pagePath === "/emergency-plumber-coventry";
   const sectionHeading = { fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(22px, 2.5vw, 28px)", color: "#0f172a", marginBottom: 16 };
   const ctaBox = { maxWidth: 720, margin: "24px auto 0", textAlign: "center", padding: "24px 20px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 16 };
   return (
@@ -220,7 +221,7 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
       </article>
       {landing.whenNeedBullets?.length ? (
         <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
-          <h2 className="syne-heading" style={sectionHeading}>When You Need an Emergency Plumber</h2>
+          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "Emergency plumber Coventry: when to call immediately" : "When You Need an Emergency Plumber"}</h2>
           <ul style={{ margin: 0, paddingLeft: 22, color: "#475569", fontSize: 15, lineHeight: 1.85 }}>
             {landing.whenNeedBullets.map((item) => (
               <li key={item} style={{ marginBottom: 8 }}>{item}</li>
@@ -230,13 +231,13 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
       ) : null}
       {landing.fastResponseBody ? (
         <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
-          <h2 className="syne-heading" style={sectionHeading}>Fast Response Across Coventry</h2>
+          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "24 hour plumber Coventry coverage" : "Fast Response Across Coventry"}</h2>
           <p style={{ color: "#475569", fontSize: 16, lineHeight: 1.78, margin: 0 }}>{landing.fastResponseBody}</p>
         </div>
       ) : null}
       {landing.whyChooseBullets?.length ? (
         <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
-          <h2 className="syne-heading" style={sectionHeading}>Why Choose Us</h2>
+          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "Urgent plumbing services Coventry: why call us" : "Why Choose Us"}</h2>
           <ul style={{ margin: 0, paddingLeft: 22, color: "#475569", fontSize: 15, lineHeight: 1.85 }}>
             {landing.whyChooseBullets.map((item) => (
               <li key={item} style={{ marginBottom: 8 }}>{item}</li>
@@ -266,6 +267,16 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
             <li key={item} style={{ marginBottom: 8 }}>{item}</li>
           ))}
         </ul>
+        {isEmergencyPage ? (
+          <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.7, marginTop: 16 }}>
+            Related urgent pages:{" "}
+            <Link to="/boiler-repair-coventry" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>boiler repair Coventry</Link>
+            {" "}|{" "}
+            <Link to="/blocked-drain-coventry" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>blocked drain Coventry</Link>
+            {" "}|{" "}
+            <Link to="/leak-repair-coventry" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>leak repair Coventry</Link>
+          </p>
+        ) : null}
       </div>
       <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
         <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 18 }}>Why homeowners in Coventry use this service</h2>
@@ -349,6 +360,7 @@ function LegalPage({ heading, body = [] }) {
 export default function App() {
   const location = useLocation();
   const pathname = location.pathname.toLowerCase();
+  const isEmergencyPage = pathname === "/emergency-plumber-coventry";
   const phoneCtaHiddenStyle = {};
   const pageConfig = useMemo(() => {
     const base = SERVICE_PAGES[pathname] || SERVICE_PAGES["/"];
@@ -540,7 +552,7 @@ export default function App() {
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    name: "coventryplumbing247",
+    name: isEmergencyPage ? "Coventry Plumbing 24/7" : "coventryplumbing247",
     url: canonicalUrl,
     telephone: PHONE_TEL,
     areaServed: ["Coventry", "CV1", "CV2", "CV3", "CV4", "CV5", "CV6", "CV7", "CV8"],
@@ -567,8 +579,8 @@ export default function App() {
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    serviceType: pageConfig.h1Prefix,
-    provider: { "@type": "LocalBusiness", name: "coventryplumbing247" },
+    serviceType: isEmergencyPage ? "Emergency plumbing" : pageConfig.h1Prefix,
+    provider: { "@type": "LocalBusiness", name: isEmergencyPage ? "Coventry Plumbing 24/7" : "coventryplumbing247" },
     areaServed: "Coventry",
     description: pageConfig.description,
   };
@@ -578,7 +590,8 @@ export default function App() {
       <div style={{ textAlign: "center", marginBottom: 16 }}>
         <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Free quote</p>
         <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(20px, 2vw, 26px)", marginBottom: 6, color: "#0f172a", lineHeight: 1.2 }}>Get help right now</h2>
-        <p style={{ color: "#475569", fontSize: 13, lineHeight: 1.55 }}>Quick details — we will call you back to connect you with a local engineer.</p>
+        <p style={{ color: "#475569", fontSize: 13, lineHeight: 1.55 }}>Quick details — we will call you back and dispatch a local vetted plumber.</p>
+        <p style={{ color: "#4338ca", fontSize: 12, fontWeight: 700, marginTop: 8 }}>Emergency slots are limited — urgent requests are prioritised</p>
       </div>
 
       {submitted ? (
@@ -593,6 +606,7 @@ export default function App() {
             <span style={{ fontSize: 15 }}>📞</span>
             <span style={{ color: "#3730a3", fontWeight: 600, fontSize: 13 }}>Or call <a href={`tel:${PHONE_TEL}`} style={{ color: "#4f46e5", fontWeight: 800, textDecoration: "none" }}>{PHONE}</a> — 24/7</span>
           </div>
+          <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("click_to_call_form_fastest_response", { page: pathname })} className="btn-primary" style={{ width: "100%", marginBottom: 14, fontSize: 15, padding: "12px 14px", borderRadius: 12, textDecoration: "none" }}>📞 Call now for fastest response</a>
           <div className="hero-form-simple">
             <div>
               <label className="hero-field-label" htmlFor="lead-name">Your name *</label>
@@ -651,6 +665,7 @@ export default function App() {
             <button type="button" className="btn-primary" onClick={handleSubmit} disabled={loading} style={{ fontSize: 16, padding: "15px 16px", borderRadius: 12, width: "100%", marginTop: 2, opacity: loading ? 0.85 : 1 }}>
               {loading ? "Sending…" : "Submit"}
             </button>
+            <p style={{ textAlign: "center", fontSize: 12, color: "#64748b", lineHeight: 1.55 }}>✔ No obligation &nbsp; ✔ Speak to a real person &nbsp; ✔ Fast local dispatch</p>
             <p style={{ textAlign: "center", fontSize: 11, color: "#94a3b8", lineHeight: 1.45 }}>We use your number to call you about this enquiry.</p>
             <p style={{ textAlign: "center", color: "#64748b", fontSize: 11, lineHeight: 1.55 }}>Introducer service only — your contract is with the engineer you choose.</p>
           </div>
@@ -865,6 +880,12 @@ export default function App() {
                 <>{pageConfig.h1Prefix}<br /><span className="grad-text">{pageConfig.h1Highlight}</span><br />{pageConfig.h1Suffix}</>
               )}
             </h1>
+            {isEmergencyPage ? (
+              <div className="fu3" style={{ marginBottom: 12, padding: "10px 14px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.07)", display: "inline-flex", flexDirection: "column", gap: 4 }}>
+                <span style={{ color: "rgba(255,255,255,0.94)", fontSize: 13, fontWeight: 700 }}>Plumbers available near you now</span>
+                <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 600 }}>Average arrival: 30-60 minutes</span>
+              </div>
+            ) : null}
             <p className="fu3" style={{ fontSize: "clamp(16px, 2vw, 18px)", color: "rgba(255,255,255,0.78)", lineHeight: 1.65, marginBottom: 14, maxWidth: "min(40rem, 100%)" }}>
               {pageConfig.intro}
             </p>
@@ -874,7 +895,7 @@ export default function App() {
             </div>
             <div className="fu3" style={{ width: "100%" }}>
               <div className="hero-trust-badges">
-                {["✅ 24/7 Service", "📍 Local Coventry Engineers", "⚡ Fast Response", "🔒 Gas Safe engineers where required"].map(b => <span key={b} className="badge">{b}</span>)}
+                {["24/7 Service", "Local Coventry Plumbers", "⚡ Fast Response", "Gas Safe where required"].map(b => <span key={b} className="badge">{b}</span>)}
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 14, color: "rgba(255,255,255,0.85)", fontSize: 13 }}>
                 <a className="trust-link" href="https://www.gassaferegister.co.uk/" target="_blank" rel="noreferrer">Gas Safe Register</a>
@@ -885,7 +906,11 @@ export default function App() {
               <div style={phoneCtaHiddenStyle}>
                 <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Prefer to talk?</p>
                 <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("click_to_call_hero_foot", { page: pathname })} className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(26px, 3vw, 34px)", color: "white", textDecoration: "none", letterSpacing: "-0.02em", display: "inline-block", lineHeight: 1.1 }}>{PHONE}</a>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginTop: 8, lineHeight: 1.5 }}>Speak to a local engineer quickly. We connect you with trusted plumbers across Coventry for urgent and general plumbing issues.</p>
+                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginTop: 8, lineHeight: 1.5 }}>
+                  {isEmergencyPage
+                    ? "Speak to a real person now. We dispatch local vetted plumbers across Coventry for urgent plumbing issues."
+                    : "Speak to a local engineer quickly. We connect you with trusted plumbers across Coventry for urgent and general plumbing issues."}
+                </p>
               </div>
               <div className="hero-left-foot-stats">
                 {TRUST_STATS.slice(0, 4).map(stat => (
@@ -990,7 +1015,7 @@ export default function App() {
                   {" "}page. Photos are for illustration — your engineer is assigned when you enquire.
                 </>
               ) : (
-                "From urgent repairs to same-day support, we connect you with local engineers for real jobs across Coventry. Photos are for illustration — your engineer is assigned when you enquire."
+                "From urgent repairs to same-day support, we dispatch local vetted plumbers for real jobs across Coventry. Photos are for illustration and may vary by attending plumber."
               )}
             </p>
           </div>
