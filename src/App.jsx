@@ -212,35 +212,112 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
   const isEmergencyPage = pagePath === "/emergency-plumber-coventry";
   const sectionHeading = { fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(22px, 2.5vw, 28px)", color: "#0f172a", marginBottom: 16 };
   const ctaBox = { maxWidth: 720, margin: "24px auto 0", textAlign: "center", padding: "24px 20px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 16 };
+  const [storyPrimary, storySupportA, storySupportB, storyWide, storyProcess, ...storyExtras] = landing.paragraphs;
+  const contentMaxWidth = isEmergencyPage ? 1160 : 720;
+  const emergencyPanelStyle = isEmergencyPage
+    ? {
+        background: "#ffffff",
+        border: "1px solid #dbe3f0",
+        borderRadius: 16,
+        padding: "22px 24px",
+        boxShadow: "0 10px 28px rgba(15, 23, 42, 0.06)",
+      }
+    : {};
+  const emergencyBulletListStyle = isEmergencyPage
+    ? {
+        margin: 0,
+        padding: 0,
+        listStyle: "none",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+        gap: "12px 18px",
+      }
+    : {
+        margin: 0,
+        paddingLeft: 22,
+      };
   return (
-    <section style={{ padding: "56px clamp(16px, 4vw, 48px) 80px", background: "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
-      <article style={{ maxWidth: 720, margin: "0 auto" }}>
-        {landing.paragraphs.map((text, i) => (
-          <p key={i} style={{ color: "#475569", fontSize: 16, lineHeight: 1.78, marginBottom: i === landing.paragraphs.length - 1 ? 0 : 20 }}>{text}</p>
-        ))}
-      </article>
+    <section style={{ padding: "56px clamp(16px, 4vw, 48px) 80px", background: isEmergencyPage ? "linear-gradient(180deg, #f8fbff 0%, #eef5ff 52%, #ffffff 100%)" : "#ffffff", borderBottom: "1px solid #e2e8f0" }}>
+      {isEmergencyPage ? (
+        <div className="emergency-story-wrap">
+          <div className="emergency-story-header">
+            <p className="emergency-story-kicker">Local emergency context</p>
+            <h2 className="syne-heading emergency-story-title">Emergency plumber Coventry: quick local guidance</h2>
+            <p className="emergency-story-subtitle">A clear local breakdown of urgent plumbing issues, neighbourhood coverage, and what happens next.</p>
+          </div>
+          <div className="emergency-story-grid">
+            {storyPrimary ? (
+              <article className="emergency-story-card primary">
+                <p className="emergency-story-chip">📍 Local context</p>
+                <p>{storyPrimary}</p>
+              </article>
+            ) : null}
+            {storySupportA ? (
+              <article className="emergency-story-card side side-a">
+                <p className="emergency-story-chip">💧 Common emergencies</p>
+                <p>{storySupportA}</p>
+              </article>
+            ) : null}
+            {storySupportB ? (
+              <article className="emergency-story-card side side-b">
+                <p className="emergency-story-chip">⚡ Urgency guidance</p>
+                <p>{storySupportB}</p>
+              </article>
+            ) : null}
+            {storyWide ? (
+              <article className="emergency-story-card wide">
+                <p className="emergency-story-chip">🗺️ Areas we cover</p>
+                <p>{storyWide}</p>
+              </article>
+            ) : null}
+            {storyProcess ? (
+              <article className="emergency-story-card process">
+                <p className="emergency-story-chip">🛠️ What happens after you contact us</p>
+                <p>{storyProcess}</p>
+              </article>
+            ) : null}
+            {storyExtras.map((text, i) => (
+              <article key={i} className="emergency-story-card extra">
+                <p>{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <article style={{ maxWidth: 720, margin: "0 auto" }}>
+          {landing.paragraphs.map((text, i) => (
+            <p key={i} style={{ color: "#475569", fontSize: 16, lineHeight: 1.78, marginBottom: i === landing.paragraphs.length - 1 ? 0 : 20 }}>{text}</p>
+          ))}
+        </article>
+      )}
       {landing.whenNeedBullets?.length ? (
-        <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
+        <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
           <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "Emergency plumber Coventry: when to call immediately" : "When You Need an Emergency Plumber"}</h2>
-          <ul style={{ margin: 0, paddingLeft: 22, color: "#475569", fontSize: 15, lineHeight: 1.85 }}>
+          <ul style={{ ...emergencyBulletListStyle, color: "#475569", fontSize: isEmergencyPage ? 16 : 15, lineHeight: isEmergencyPage ? 1.75 : 1.85, ...emergencyPanelStyle }}>
             {landing.whenNeedBullets.map((item) => (
-              <li key={item} style={{ marginBottom: 8 }}>{item}</li>
+              <li key={item} style={{ marginBottom: isEmergencyPage ? 0 : 8, display: "flex", alignItems: "flex-start", gap: isEmergencyPage ? 10 : 0 }}>
+                {isEmergencyPage ? <span aria-hidden style={{ color: "#4f46e5", fontWeight: 800, lineHeight: 1.2 }}>•</span> : null}
+                <span>{item}</span>
+              </li>
             ))}
           </ul>
         </div>
       ) : null}
       {landing.fastResponseBody ? (
-        <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
+        <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
           <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "24 hour plumber Coventry coverage" : "Fast Response Across Coventry"}</h2>
-          <p style={{ color: "#475569", fontSize: 16, lineHeight: 1.78, margin: 0 }}>{landing.fastResponseBody}</p>
+          <p style={{ color: "#475569", fontSize: isEmergencyPage ? 17 : 16, lineHeight: 1.78, margin: 0, ...emergencyPanelStyle }}>{landing.fastResponseBody}</p>
         </div>
       ) : null}
       {landing.whyChooseBullets?.length ? (
-        <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
+        <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
           <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "Urgent plumbing services Coventry: why call us" : "Why Choose Us"}</h2>
-          <ul style={{ margin: 0, paddingLeft: 22, color: "#475569", fontSize: 15, lineHeight: 1.85 }}>
+          <ul style={{ ...emergencyBulletListStyle, color: "#475569", fontSize: isEmergencyPage ? 16 : 15, lineHeight: isEmergencyPage ? 1.72 : 1.85, ...emergencyPanelStyle }}>
             {landing.whyChooseBullets.map((item) => (
-              <li key={item} style={{ marginBottom: 8 }}>{item}</li>
+              <li key={item} style={{ marginBottom: isEmergencyPage ? 0 : 8, display: "flex", alignItems: "flex-start", gap: isEmergencyPage ? 10 : 0 }}>
+                {isEmergencyPage ? <span aria-hidden style={{ color: "#0ea5e9", fontWeight: 800, lineHeight: 1.2 }}>•</span> : null}
+                <span>{item}</span>
+              </li>
             ))}
           </ul>
         </div>
@@ -260,15 +337,18 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
           ))}
         </div>
       ) : null}
-      <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
+      <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
         <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 16 }}>Services we can help with</h2>
-        <ul style={{ margin: 0, paddingLeft: 22, color: "#475569", fontSize: 15, lineHeight: 1.85 }}>
+        <ul style={{ ...emergencyBulletListStyle, color: "#475569", fontSize: isEmergencyPage ? 16 : 15, lineHeight: isEmergencyPage ? 1.72 : 1.85, ...emergencyPanelStyle }}>
           {landing.serviceListItems.map((item) => (
-            <li key={item} style={{ marginBottom: 8 }}>{item}</li>
+            <li key={item} style={{ marginBottom: isEmergencyPage ? 0 : 8, display: "flex", alignItems: "flex-start", gap: isEmergencyPage ? 10 : 0 }}>
+              {isEmergencyPage ? <span aria-hidden style={{ color: "#6366f1", fontWeight: 800, lineHeight: 1.2 }}>•</span> : null}
+              <span>{item}</span>
+            </li>
           ))}
         </ul>
         {isEmergencyPage ? (
-          <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.7, marginTop: 16 }}>
+          <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.7, marginTop: 16, ...emergencyPanelStyle }}>
             Related urgent pages:{" "}
             <Link to="/boiler-repair-coventry" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>boiler repair Coventry</Link>
             {" "}|{" "}
@@ -278,19 +358,19 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
           </p>
         ) : null}
       </div>
-      <div style={{ maxWidth: 720, margin: "40px auto 0" }}>
+      <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
         <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 18 }}>Why homeowners in Coventry use this service</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 18 }}>
+        <div style={{ display: "grid", gridTemplateColumns: isEmergencyPage ? "repeat(auto-fit, minmax(280px, 1fr))" : "repeat(auto-fit, minmax(240px, 1fr))", gap: isEmergencyPage ? 20 : 18 }}>
           {landing.trustPoints.map((t) => (
-            <div key={t.title} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 16, padding: "22px 20px" }}>
-              <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: 17, color: "#1e40af", marginBottom: 10 }}>{t.title}</h3>
-              <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.65, margin: 0 }}>{t.desc}</p>
+            <div key={t.title} style={{ background: "#ffffff", border: "1px solid #dbe3f0", borderRadius: 16, padding: isEmergencyPage ? "24px 22px" : "22px 20px", boxShadow: isEmergencyPage ? "0 10px 26px rgba(15, 23, 42, 0.06)" : "none" }}>
+              <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: isEmergencyPage ? 20 : 17, color: "#1e40af", marginBottom: 10 }}>{t.title}</h3>
+              <p style={{ color: "#64748b", fontSize: isEmergencyPage ? 16 : 14, lineHeight: 1.68, margin: 0 }}>{t.desc}</p>
             </div>
           ))}
         </div>
       </div>
       {landing.extraFaqItems?.length ? (
-        <div style={{ maxWidth: 720, margin: "48px auto 0" }}>
+        <div style={{ maxWidth: contentMaxWidth, margin: "48px auto 0" }}>
           <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>FAQ</p>
           <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 20 }}>Emergency plumber questions</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -602,10 +682,6 @@ export default function App() {
         </div>
       ) : (
         <>
-          <div style={{ background: "linear-gradient(135deg, #eef2ff, #e0e7ff)", border: "1px solid #c7d2fe", borderRadius: 10, padding: "10px 14px", marginBottom: 16, display: "flex", alignItems: "center", gap: 8, ...phoneCtaHiddenStyle }}>
-            <span style={{ fontSize: 15 }}>📞</span>
-            <span style={{ color: "#3730a3", fontWeight: 600, fontSize: 13 }}>Or call <a href={`tel:${PHONE_TEL}`} style={{ color: "#4f46e5", fontWeight: 800, textDecoration: "none" }}>{PHONE}</a> — 24/7</span>
-          </div>
           <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("click_to_call_form_fastest_response", { page: pathname })} className="btn-primary" style={{ width: "100%", marginBottom: 14, fontSize: 15, padding: "12px 14px", borderRadius: 12, textDecoration: "none" }}>📞 Call now for fastest response</a>
           <div className="hero-form-simple">
             <div>
@@ -773,6 +849,87 @@ export default function App() {
         .trust-link:hover { border-bottom-color: rgba(255,255,255,0.8); }
         .service-link { text-decoration: none; color: #312e81; font-weight: 700; font-size: 13px; padding: 10px 14px; border-radius: 999px; border: 1px solid #c7d2fe; background: linear-gradient(135deg, #eef2ff, #e0e7ff); transition: all 0.2s ease; box-shadow: 0 2px 10px rgba(79,70,229,0.08); }
         .service-link:hover { transform: translateY(-1px); border-color: #818cf8; box-shadow: 0 6px 18px rgba(79,70,229,0.2); }
+        .emergency-story-wrap {
+          max-width: 1160px;
+          margin: 0 auto;
+        }
+        .emergency-story-header {
+          margin-bottom: 20px;
+          max-width: 760px;
+        }
+        .emergency-story-kicker {
+          color: #4f46e5;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          margin-bottom: 8px;
+        }
+        .emergency-story-title {
+          font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+          font-weight: 800;
+          font-size: clamp(30px, 3.6vw, 44px);
+          color: #0f172a;
+          line-height: 1.16;
+          margin-bottom: 10px;
+        }
+        .emergency-story-subtitle {
+          color: #64748b;
+          font-size: 17px;
+          line-height: 1.68;
+          margin: 0;
+        }
+        .emergency-story-grid {
+          display: grid;
+          gap: 16px;
+          grid-template-columns: 1fr;
+        }
+        .emergency-story-card {
+          border: 1px solid #dbe3f0;
+          border-radius: 16px;
+          padding: 22px;
+          box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+          background: #ffffff;
+        }
+        .emergency-story-card p {
+          color: #475569;
+          font-size: 18px;
+          line-height: 1.82;
+          margin: 0;
+        }
+        .emergency-story-chip {
+          margin: 0 0 10px !important;
+          font-size: 17px !important;
+          font-weight: 800;
+          line-height: 1.45 !important;
+          color: #3730a3 !important;
+        }
+        .emergency-story-card.side { background: #ffffff; }
+        .emergency-story-card.wide { background: #ffffff; }
+        .emergency-story-card.process { background: #ffffff; }
+        @media (min-width: 1024px) {
+          .emergency-story-grid {
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+            grid-template-areas:
+              "primary sideA"
+              "primary sideB"
+              "wide sideB"
+              "process process";
+            gap: 18px;
+          }
+          .emergency-story-card.primary { grid-area: primary; padding: 28px 28px; }
+          .emergency-story-card.side-a { grid-area: sideA; }
+          .emergency-story-card.side-b { grid-area: sideB; }
+          .emergency-story-card.wide { grid-area: wide; }
+          .emergency-story-card.process { grid-area: process; }
+        }
+        @media (max-width: 680px) {
+          .emergency-story-card { padding: 18px; }
+          .emergency-story-card p { font-size: 16px; line-height: 1.72; }
+          .emergency-story-chip { font-size: 16px !important; }
+          .emergency-story-subtitle { font-size: 16px; }
+          .emergency-story-header { margin-bottom: 14px; }
+        }
         .hero-layout { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: start; width: 100%; }
         .hero-left-stack { display: flex; flex-direction: column; align-items: flex-start; text-align: left; min-width: 0; width: 100%; max-width: none; }
         .hero-left-foot {
@@ -808,6 +965,10 @@ export default function App() {
         .syne-heading-hero-left { margin-left: 0 !important; margin-right: 0 !important; text-align: left; max-width: none !important; }
         @media (max-width: 640px) { .hide-mob { display: none !important; } }
         @media (min-width: 641px) { .mob-only { display: none !important; } }
+        @media (max-width: 720px) {
+          .emergency-story-wrap { max-width: 100%; }
+          .emergency-story-title { font-size: clamp(28px, 8vw, 38px); }
+        }
         @media (max-width: 560px) { .two-col { grid-template-columns: 1fr !important; } }
         .service-showcase-grid { display: grid; grid-template-columns: 1fr; gap: 22px; width: 100%; }
         @media (min-width: 720px) { .service-showcase-grid { grid-template-columns: repeat(2, 1fr); gap: 26px; } }
