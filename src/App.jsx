@@ -327,7 +327,7 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
           {landing.emergencyCtas.map((cta, idx) => (
             <div key={idx} style={ctaBox}>
               <p style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: 18, color: "#0f172a", margin: "0 0 12px" }}>{cta.headline}</p>
-              <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("emergency_landing_tel_cta", { page: pagePath, slot: idx })} className="btn-primary pulse" style={{ fontSize: 16, padding: "14px 24px", borderRadius: 14, display: "inline-flex", textDecoration: "none", marginBottom: 8 }}>Call now for immediate help</a>
+              <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("emergency_landing_tel_cta", { page: pagePath, slot: idx }); }} className="btn-primary pulse" style={{ fontSize: 16, padding: "14px 24px", borderRadius: 14, display: "inline-flex", textDecoration: "none", marginBottom: 8 }}>Call now for immediate help</a>
               <p className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(22px, 3vw, 28px)", color: "#1e40af", margin: "8px 0 0", letterSpacing: "-0.02em" }}>{PHONE}</p>
               {cta.subline ? <p style={{ color: "#64748b", fontSize: 14, margin: "12px 0 0" }}>{cta.subline}</p> : null}
               {scrollToForm ? (
@@ -399,6 +399,14 @@ function trackEvent(name, params = {}) {
   if (window.dataLayer?.push) window.dataLayer.push({ event: name, ...params });
 }
 
+function trackPhoneCallConversion() {
+  if (window.gtag) {
+    window.gtag("event", "conversion", {
+      send_to: "AW-18098618469/99svCK61hK1cEOWAjLZD",
+    });
+  }
+}
+
 function upsertMetaTag(attr, key, content) {
   if (!content) return;
   let tag = document.querySelector(`meta[${attr}="${key}"]`);
@@ -429,7 +437,7 @@ function LegalPage({ heading, body = [] }) {
         {body.map((paragraph) => (
           <p key={paragraph} style={{ color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{paragraph}</p>
         ))}
-        <p style={{ color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>Operator: <strong>{OPERATOR_NAME}</strong><br />Email: <a href={`mailto:${OPERATOR_EMAIL}`} style={{ color: "#4f46e5", textDecoration: "none" }}>{OPERATOR_EMAIL}</a><br />Phone: <a href={`tel:${PHONE_TEL}`} style={{ color: "#4f46e5", textDecoration: "none" }}>{PHONE}</a></p>
+        <p style={{ color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>Operator: <strong>{OPERATOR_NAME}</strong><br />Email: <a href={`mailto:${OPERATOR_EMAIL}`} style={{ color: "#4f46e5", textDecoration: "none" }}>{OPERATOR_EMAIL}</a><br />Phone: <a href={`tel:${PHONE_TEL}`} onClick={() => trackPhoneCallConversion()} style={{ color: "#4f46e5", textDecoration: "none" }}>{PHONE}</a></p>
         <p style={{ color: "#475569", lineHeight: 1.7 }}>For data requests or policy questions, contact us by email and include your full name, postcode, and request type.</p>
         <Link to="/" style={{ display: "inline-block", marginTop: 24, color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>← Back to home</Link>
       </div>
@@ -682,7 +690,7 @@ export default function App() {
         </div>
       ) : (
         <>
-          <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("click_to_call_form_fastest_response", { page: pathname })} className="btn-primary" style={{ width: "100%", marginBottom: 14, fontSize: 15, padding: "12px 14px", borderRadius: 12, textDecoration: "none" }}>📞 Call now for fastest response</a>
+          <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_form_fastest_response", { page: pathname }); }} className="btn-primary" style={{ width: "100%", marginBottom: 14, fontSize: 15, padding: "12px 14px", borderRadius: 12, textDecoration: "none" }}>📞 Call now for fastest response</a>
           <div className="hero-form-simple">
             <div>
               <label className="hero-field-label" htmlFor="lead-name">Your name *</label>
@@ -1019,7 +1027,7 @@ export default function App() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12, ...phoneCtaHiddenStyle }}>
             <span className="hide-mob" style={{ fontSize: 13, fontWeight: 500, color: scrolled ? "#64748b" : "rgba(255,255,255,0.75)" }}>24/7 Emergency Line</span>
-            <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("click_to_call_header", { page: pathname })} className="btn-primary pulse" style={{ fontSize: 14, padding: "10px 20px" }}>Call Now</a>
+            <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_header", { page: pathname }); }} className="btn-primary pulse" style={{ fontSize: 14, padding: "10px 20px" }}>Call Now</a>
           </div>
         </div>
       </header>
@@ -1051,7 +1059,7 @@ export default function App() {
               {pageConfig.intro}
             </p>
             <div className="hero-cta-row fu3" style={{ marginBottom: 12, alignItems: "center" }}>
-              <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("click_to_call_hero", { page: pathname })} className="btn-primary pulse btn-hero-primary" style={{ fontSize: "clamp(14px, 2vw, 17px)", padding: "15px 28px", borderRadius: 14, ...phoneCtaHiddenStyle }}>Call now</a>
+              <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_hero", { page: pathname }); }} className="btn-primary pulse btn-hero-primary" style={{ fontSize: "clamp(14px, 2vw, 17px)", padding: "15px 28px", borderRadius: 14, ...phoneCtaHiddenStyle }}>Call now</a>
               <button type="button" onClick={() => { trackEvent("scroll_to_form_hero", { page: pathname }); scrollToForm(); }} className="btn-outline" style={{ fontSize: 15, padding: "14px 20px" }}>Get a free quote →</button>
             </div>
             <div className="fu3" style={{ width: "100%" }}>
@@ -1066,7 +1074,7 @@ export default function App() {
             <div className="hero-left-foot fu3">
               <div style={phoneCtaHiddenStyle}>
                 <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Prefer to talk?</p>
-                <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("click_to_call_hero_foot", { page: pathname })} className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(26px, 3vw, 34px)", color: "white", textDecoration: "none", letterSpacing: "-0.02em", display: "inline-block", lineHeight: 1.1 }}>{PHONE}</a>
+                <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_hero_foot", { page: pathname }); }} className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(26px, 3vw, 34px)", color: "white", textDecoration: "none", letterSpacing: "-0.02em", display: "inline-block", lineHeight: 1.1 }}>{PHONE}</a>
                 <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginTop: 8, lineHeight: 1.5 }}>
                   {isEmergencyPage
                     ? "Speak to a real person now. We dispatch local vetted plumbers across Coventry for urgent plumbing issues."
@@ -1303,7 +1311,7 @@ export default function App() {
             </p>
           )}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", alignItems: "center" }}>
-            <a href={`tel:${PHONE_TEL}`} onClick={() => trackEvent("click_to_call_footer_cta", { page: pathname })} style={{ background: "white", color: "#6366f1", fontSize: "clamp(16px, 2.5vw, 20px)", padding: "17px 36px", borderRadius: 16, border: "none", fontFamily: "'DM Sans', sans-serif", fontWeight: 800, cursor: "pointer", boxShadow: "0 8px 32px rgba(0,0,0,0.2)", textDecoration: "none", display: "inline-flex", alignItems: "center", ...phoneCtaHiddenStyle }}>Call now</a>
+            <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_footer_cta", { page: pathname }); }} style={{ background: "white", color: "#6366f1", fontSize: "clamp(16px, 2.5vw, 20px)", padding: "17px 36px", borderRadius: 16, border: "none", fontFamily: "'DM Sans', sans-serif", fontWeight: 800, cursor: "pointer", boxShadow: "0 8px 32px rgba(0,0,0,0.2)", textDecoration: "none", display: "inline-flex", alignItems: "center", ...phoneCtaHiddenStyle }}>Call now</a>
             <button type="button" onClick={() => scrollToForm()} style={{ background: "rgba(255,255,255,0.2)", color: "white", fontSize: "clamp(15px, 2vw, 18px)", padding: "15px 28px", borderRadius: 16, border: "2px solid rgba(255,255,255,0.5)", fontFamily: "'DM Sans', sans-serif", fontWeight: 700, cursor: "pointer" }}>
               Send your details
             </button>
