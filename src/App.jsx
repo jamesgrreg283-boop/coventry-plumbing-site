@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { SERVICE_LANDINGS, EMERGENCY_PLUMBER_FAQ } from "./serviceLandingContent.js";
+import { SERVICE_LANDINGS, EMERGENCY_PLUMBER_FAQ, EMERGENCY_TOWNS, EMERGENCY_TOWN_PATHS } from "./serviceLandingContent.js";
 
 const PHONE = "024 7590 5456";
 const PHONE_TEL = "+442475905456";
@@ -157,6 +157,54 @@ const SERVICE_PAGES = {
     h1Suffix: "Fast Detection & Fix",
     intro: "Spotted a leak or damp patch? We help you get local leak repair support quickly and safely.",
   },
+  "/emergency-plumber-nuneaton": {
+    title: "Emergency Plumber Nuneaton | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
+    description: "Need an emergency plumber in Nuneaton? We dispatch local vetted engineers 24/7 for burst pipes, leaks, blocked drains, boiler breakdowns and no hot water.",
+    h1Prefix: "Emergency Plumber",
+    h1Highlight: "Nuneaton",
+    h1Suffix: "24/7 Urgent Callouts",
+    intro: "Need an emergency plumber Nuneaton households can call right now? We route local vetted plumbers across Attleborough, Stockingford, Weddington, Whitestone, Horeston Grange and Chilvers Coton for burst pipes, leaks, blocked drains and no-hot-water emergencies.",
+  },
+  "/emergency-plumber-bedworth": {
+    title: "Emergency Plumber Bedworth | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
+    description: "Need an emergency plumber in Bedworth? Local vetted engineers dispatched 24/7 across CV12 for burst pipes, leaks, blocked drains, boiler issues and no hot water.",
+    h1Prefix: "Emergency Plumber",
+    h1Highlight: "Bedworth",
+    h1Suffix: "24/7 Urgent Callouts",
+    intro: "Need an emergency plumber Bedworth residents can call out of hours? We route local engineers across CV12 — Bulkington, Exhall, Ash Green, Keresley and Longford — for urgent leaks, burst pipes, blocked drains and boiler failures.",
+  },
+  "/emergency-plumber-rugby": {
+    title: "Emergency Plumber Rugby | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
+    description: "Need an emergency plumber in Rugby? Local vetted engineers dispatched 24/7 across CV21–CV23 for burst pipes, leaks, blocked drains, boiler breakdowns and no hot water.",
+    h1Prefix: "Emergency Plumber",
+    h1Highlight: "Rugby",
+    h1Suffix: "24/7 Urgent Callouts",
+    intro: "Need an emergency plumber Rugby residents can call day or night? We route local engineers across CV21, CV22 and CV23 — Bilton, Hillmorton, Brownsover, Cawston, Newbold, Dunchurch and Clifton upon Dunsmore — for urgent plumbing failures.",
+  },
+  "/emergency-plumber-warwick": {
+    title: "Emergency Plumber Warwick | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
+    description: "Need an emergency plumber in Warwick? Local vetted engineers dispatched 24/7 across CV34 and CV35 for burst pipes, leaks, blocked drains, boiler issues and no hot water.",
+    h1Prefix: "Emergency Plumber",
+    h1Highlight: "Warwick",
+    h1Suffix: "24/7 Urgent Callouts",
+    intro: "Need an emergency plumber Warwick households can call out of hours? We route local engineers across CV34 and CV35 — town centre, Chase Meadow, Woodloes, Myton, Leek Wootton and Hatton — for urgent leaks, burst pipes and boiler failures.",
+  },
+  "/emergency-plumber-leamington-spa": {
+    title: "Emergency Plumber Leamington Spa | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
+    description: "Need an emergency plumber in Leamington Spa? Local vetted engineers dispatched 24/7 across CV31 and CV32 for burst pipes, leaks, blocked drains and no hot water.",
+    h1Prefix: "Emergency Plumber",
+    h1Highlight: "Leamington Spa",
+    h1Suffix: "24/7 Urgent Callouts",
+    intro: "Need an emergency plumber Leamington Spa residents can call at any hour? We route local engineers across CV31 and CV32 — centre, Whitnash, Sydenham, Lillington, Milverton and Cubbington — for urgent leaks, burst pipes and shared-riser flat emergencies.",
+  },
+  "/emergency-plumber-kenilworth": {
+    title: "Emergency Plumber Kenilworth | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
+    description: "Need an emergency plumber in Kenilworth? Local vetted engineers dispatched 24/7 across CV8 for burst pipes, leaks, blocked drains, boiler issues and no hot water.",
+    h1Prefix: "Emergency Plumber",
+    h1Highlight: "Kenilworth",
+    h1Suffix: "24/7 Urgent Callouts",
+    intro: "Need an emergency plumber Kenilworth households can call around the clock? We route local engineers across CV8 — town centre, Abbey Fields, St John's, Crackley, Burton Green and Leek Wootton — for urgent leaks, burst pipes and unvented-cylinder failures.",
+  },
 };
 
 const LEGAL_BUSINESS_MODEL = "coventryplumbing247 is a lead generation and customer introduction service. We connect customers with independent local plumbing engineers. We do not carry out plumbing work ourselves and are not a plumbing contractor.";
@@ -207,9 +255,39 @@ function FaqItem({ q, a }) {
   );
 }
 
+function EmergencyTownsGrid({ currentPath }) {
+  const coventryEntry = {
+    slug: "/emergency-plumber-coventry",
+    name: "Coventry",
+    postcodes: "CV1–CV8",
+    blurb: "City Centre, Earlsdon, Cheylesmore, Holbrooks, Tile Hill and surrounding postcodes.",
+  };
+  const allTowns = [coventryEntry, ...EMERGENCY_TOWNS].filter((t) => t.slug !== currentPath);
+  if (!allTowns.length) return null;
+  return (
+    <div style={{ maxWidth: 1160, margin: "56px auto 0" }}>
+      <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Coverage</p>
+      <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(22px, 2.5vw, 28px)", color: "#0f172a", marginBottom: 8 }}>Other emergency plumber areas we cover</h2>
+      <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.65, marginBottom: 22, maxWidth: 720 }}>
+        Each area below has its own dedicated emergency page. Tap a town to see local context, postcodes and the same 24/7 line for urgent plumbing help.
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
+        {allTowns.map((town) => (
+          <Link key={town.slug} to={town.slug} style={{ display: "block", background: "#ffffff", border: "1px solid #dbe3f0", borderRadius: 16, padding: "20px 22px", textDecoration: "none", color: "inherit", boxShadow: "0 6px 18px rgba(15, 23, 42, 0.05)", transition: "transform 0.18s ease, box-shadow 0.18s ease" }}>
+            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 6 }}>{town.postcodes}</p>
+            <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: 18, color: "#1e40af", marginBottom: 6 }}>{`Emergency plumber ${town.name}`}</h3>
+            <p style={{ color: "#475569", fontSize: 13, lineHeight: 1.55, margin: 0 }}>{town.blurb}</p>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
   if (!landing) return null;
-  const isEmergencyPage = pagePath === "/emergency-plumber-coventry";
+  const isEmergencyPage = EMERGENCY_TOWN_PATHS.has(pagePath);
+  const townName = landing.townName || "Coventry";
   const sectionHeading = { fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(22px, 2.5vw, 28px)", color: "#0f172a", marginBottom: 16 };
   const ctaBox = { maxWidth: 720, margin: "24px auto 0", textAlign: "center", padding: "24px 20px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 16 };
   const [storyPrimary, storySupportA, storySupportB, storyWide, storyProcess, ...storyExtras] = landing.paragraphs;
@@ -242,8 +320,8 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
         <div className="emergency-story-wrap">
           <div className="emergency-story-header">
             <p className="emergency-story-kicker">Local emergency context</p>
-            <h2 className="syne-heading emergency-story-title">Emergency plumber Coventry: quick local guidance</h2>
-            <p className="emergency-story-subtitle">A clear local breakdown of urgent plumbing issues, neighbourhood coverage, and what happens next.</p>
+            <h2 className="syne-heading emergency-story-title">{`Emergency plumber ${townName}: quick local guidance`}</h2>
+            <p className="emergency-story-subtitle">{`A clear local breakdown of urgent plumbing issues in ${townName}, neighbourhood coverage, and what happens next.`}</p>
           </div>
           <div className="emergency-story-grid">
             {storyPrimary ? (
@@ -292,7 +370,7 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
       )}
       {landing.whenNeedBullets?.length ? (
         <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
-          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "Emergency plumber Coventry: when to call immediately" : "When You Need an Emergency Plumber"}</h2>
+          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? `Emergency plumber ${townName}: when to call immediately` : "When You Need an Emergency Plumber"}</h2>
           <ul style={{ ...emergencyBulletListStyle, color: "#475569", fontSize: isEmergencyPage ? 16 : 15, lineHeight: isEmergencyPage ? 1.75 : 1.85, ...emergencyPanelStyle }}>
             {landing.whenNeedBullets.map((item) => (
               <li key={item} style={{ marginBottom: isEmergencyPage ? 0 : 8, display: "flex", alignItems: "flex-start", gap: isEmergencyPage ? 10 : 0 }}>
@@ -305,13 +383,13 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
       ) : null}
       {landing.fastResponseBody ? (
         <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
-          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "24 hour plumber Coventry coverage" : "Fast Response Across Coventry"}</h2>
+          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? `24 hour plumber ${townName} coverage` : "Fast Response Across Coventry"}</h2>
           <p style={{ color: "#475569", fontSize: isEmergencyPage ? 17 : 16, lineHeight: 1.78, margin: 0, ...emergencyPanelStyle }}>{landing.fastResponseBody}</p>
         </div>
       ) : null}
       {landing.whyChooseBullets?.length ? (
         <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
-          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? "Urgent plumbing services Coventry: why call us" : "Why Choose Us"}</h2>
+          <h2 className="syne-heading" style={sectionHeading}>{isEmergencyPage ? `Urgent plumbing services ${townName}: why call us` : "Why Choose Us"}</h2>
           <ul style={{ ...emergencyBulletListStyle, color: "#475569", fontSize: isEmergencyPage ? 16 : 15, lineHeight: isEmergencyPage ? 1.72 : 1.85, ...emergencyPanelStyle }}>
             {landing.whyChooseBullets.map((item) => (
               <li key={item} style={{ marginBottom: isEmergencyPage ? 0 : 8, display: "flex", alignItems: "flex-start", gap: isEmergencyPage ? 10 : 0 }}>
@@ -347,19 +425,20 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
             </li>
           ))}
         </ul>
-        {isEmergencyPage ? (
+        {isEmergencyPage && landing.relatedServices?.length ? (
           <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.7, marginTop: 16, ...emergencyPanelStyle }}>
-            Related urgent pages:{" "}
-            <Link to="/boiler-repair-coventry" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>boiler repair Coventry</Link>
-            {" "}|{" "}
-            <Link to="/blocked-drain-coventry" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>blocked drain Coventry</Link>
-            {" "}|{" "}
-            <Link to="/leak-repair-coventry" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>leak repair Coventry</Link>
+            Related local pages:{" "}
+            {landing.relatedServices.map((rel, i) => (
+              <span key={rel.path}>
+                <Link to={rel.path} style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}>{rel.label}</Link>
+                {i < landing.relatedServices.length - 1 ? <span>{" "}|{" "}</span> : null}
+              </span>
+            ))}
           </p>
         ) : null}
       </div>
       <div style={{ maxWidth: contentMaxWidth, margin: "40px auto 0" }}>
-        <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 18 }}>Why homeowners in Coventry use this service</h2>
+        <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 18 }}>{`Why homeowners in ${townName} use this service`}</h2>
         <div style={{ display: "grid", gridTemplateColumns: isEmergencyPage ? "repeat(auto-fit, minmax(280px, 1fr))" : "repeat(auto-fit, minmax(240px, 1fr))", gap: isEmergencyPage ? 20 : 18 }}>
           {landing.trustPoints.map((t) => (
             <div key={t.title} style={{ background: "#ffffff", border: "1px solid #dbe3f0", borderRadius: 16, padding: isEmergencyPage ? "24px 22px" : "22px 20px", boxShadow: isEmergencyPage ? "0 10px 26px rgba(15, 23, 42, 0.06)" : "none" }}>
@@ -372,7 +451,7 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
       {landing.extraFaqItems?.length ? (
         <div style={{ maxWidth: contentMaxWidth, margin: "48px auto 0" }}>
           <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>FAQ</p>
-          <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 20 }}>Emergency plumber questions</h2>
+          <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 20 }}>{`${townName} emergency plumber questions`}</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {landing.extraFaqItems.map((faq) => (
               <FaqItem key={faq.q} q={faq.q} a={faq.a} />
@@ -380,6 +459,7 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
           </div>
         </div>
       ) : null}
+      {isEmergencyPage ? <EmergencyTownsGrid currentPath={pagePath} /> : null}
     </section>
   );
 }
@@ -448,7 +528,8 @@ function LegalPage({ heading, body = [] }) {
 export default function App() {
   const location = useLocation();
   const pathname = location.pathname.toLowerCase();
-  const isEmergencyPage = pathname === "/emergency-plumber-coventry";
+  const isEmergencyPage = EMERGENCY_TOWN_PATHS.has(pathname);
+  const currentTownName = SERVICE_LANDINGS[pathname]?.townName || "Coventry";
   const phoneCtaHiddenStyle = {};
   const pageConfig = useMemo(() => {
     const base = SERVICE_PAGES[pathname] || SERVICE_PAGES["/"];
@@ -637,13 +718,25 @@ export default function App() {
   }
 
   const canonicalUrl = `${SITE_URL}${pathname === "/" ? "" : pathname}`;
+  const baseAreaServed = ["Coventry", "CV1", "CV2", "CV3", "CV4", "CV5", "CV6", "CV7", "CV8"];
+  const townSpecificArea =
+    pathname === "/emergency-plumber-nuneaton" ? ["Nuneaton", "CV10", "CV11", "Attleborough", "Stockingford", "Weddington", "Chilvers Coton"]
+    : pathname === "/emergency-plumber-bedworth" ? ["Bedworth", "CV12", "Bulkington", "Exhall", "Ash Green", "Keresley", "Longford"]
+    : pathname === "/emergency-plumber-rugby" ? ["Rugby", "CV21", "CV22", "CV23", "Bilton", "Hillmorton", "Brownsover", "Cawston", "Dunchurch"]
+    : pathname === "/emergency-plumber-warwick" ? ["Warwick", "CV34", "CV35", "Chase Meadow", "Woodloes", "Myton", "Hatton"]
+    : pathname === "/emergency-plumber-leamington-spa" ? ["Royal Leamington Spa", "CV31", "CV32", "Whitnash", "Sydenham", "Lillington", "Milverton"]
+    : pathname === "/emergency-plumber-kenilworth" ? ["Kenilworth", "CV8", "Abbey Fields", "Crackley", "Burton Green", "Leek Wootton"]
+    : [];
   const localBusinessSchema = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: isEmergencyPage ? "Coventry Plumbing 24/7" : "coventryplumbing247",
+    "@type": ["Plumber", "LocalBusiness"],
+    "@id": `${SITE_URL}/#business`,
+    name: "Coventry Plumbing 24/7",
     url: canonicalUrl,
     telephone: PHONE_TEL,
-    areaServed: ["Coventry", "CV1", "CV2", "CV3", "CV4", "CV5", "CV6", "CV7", "CV8"],
+    email: OPERATOR_EMAIL,
+    priceRange: "££",
+    areaServed: [...townSpecificArea, ...baseAreaServed],
     address: {
       "@type": "PostalAddress",
       addressLocality: "Coventry",
@@ -651,12 +744,11 @@ export default function App() {
       addressCountry: "GB",
     },
     openingHoursSpecification: [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "00:00", closes: "23:59" }],
-    sameAs: ["https://www.gassaferegister.co.uk/", "https://www.google.com/maps"],
+    sameAs: ["https://www.gassaferegister.co.uk/"],
   };
+  const landingFaqItems = SERVICE_LANDINGS[pathname]?.extraFaqItems || [];
   const faqSchemaMainEntity = [
-    ...(pathname === "/emergency-plumber-coventry"
-      ? EMERGENCY_PLUMBER_FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } }))
-      : []),
+    ...landingFaqItems.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
     ...FAQS.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   ];
   const faqSchema = {
@@ -667,10 +759,18 @@ export default function App() {
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    serviceType: isEmergencyPage ? "Emergency plumbing" : pageConfig.h1Prefix,
-    provider: { "@type": "LocalBusiness", name: isEmergencyPage ? "Coventry Plumbing 24/7" : "coventryplumbing247" },
-    areaServed: "Coventry",
+    serviceType: isEmergencyPage ? `Emergency plumbing in ${currentTownName}` : pageConfig.h1Prefix,
+    provider: { "@type": "LocalBusiness", name: "Coventry Plumbing 24/7", telephone: PHONE_TEL, email: OPERATOR_EMAIL },
+    areaServed: isEmergencyPage ? currentTownName : "Coventry",
     description: pageConfig.description,
+  };
+  const breadcrumbSchema = pathname === "/" ? null : {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: pageConfig.title.split(" | ")[0], item: canonicalUrl },
+    ],
   };
 
   const renderLeadForm = () => (
@@ -1018,6 +1118,9 @@ export default function App() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      {breadcrumbSchema ? (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      ) : null}
 
       {/* HEADER */}
       <header style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: scrolled ? "rgba(255,255,255,0.96)" : "transparent", backdropFilter: scrolled ? "blur(12px)" : "none", borderBottom: scrolled ? "1px solid #e2e8f0" : "none", transition: "all 0.3s", padding: "0 clamp(16px, 4vw, 48px)" }}>
@@ -1077,7 +1180,7 @@ export default function App() {
                 <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_hero_foot", { page: pathname }); }} className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(26px, 3vw, 34px)", color: "white", textDecoration: "none", letterSpacing: "-0.02em", display: "inline-block", lineHeight: 1.1 }}>{PHONE}</a>
                 <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginTop: 8, lineHeight: 1.5 }}>
                   {isEmergencyPage
-                    ? "Speak to a real person now. We dispatch local vetted plumbers across Coventry for urgent plumbing issues."
+                    ? `Speak to a real person now. We dispatch local vetted plumbers across ${currentTownName} for urgent plumbing issues.`
                     : "Speak to a local engineer quickly. We connect you with trusted plumbers across Coventry for urgent and general plumbing issues."}
                 </p>
               </div>
@@ -1142,7 +1245,7 @@ export default function App() {
         <div style={{ maxWidth: 1580, margin: "0 auto" }}>
           <div style={{ textAlign: "center", maxWidth: 520, margin: "0 auto 48px" }}>
             <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Why Us</p>
-            <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(24px, 3vw, 38px)", color: "#0f172a" }}>{pathname === "/" ? "Trusted plumbing support across Coventry" : "Coventry's trusted emergency plumbing service"}</h2>
+            <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(24px, 3vw, 38px)", color: "#0f172a" }}>{pathname === "/" ? "Trusted plumbing support across Coventry" : (isEmergencyPage ? `${currentTownName === "Coventry" ? "Coventry's" : `${currentTownName}'s`} trusted emergency plumbing service` : "Coventry's trusted emergency plumbing service")}</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 22 }}>
             {WHY_US.map(item => (
@@ -1217,7 +1320,7 @@ export default function App() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <div className="areas-section-title-wrap">
               <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(24px, 3vw, 36px)", color: "#1e3a8a", lineHeight: 1.2 }}>
-                Areas we cover in Coventry
+                {isEmergencyPage && currentTownName !== "Coventry" ? `Areas we cover around ${currentTownName}` : "Areas we cover in Coventry"}
               </h2>
             </div>
             <p style={{ color: "#64748b", fontSize: 16, lineHeight: 1.65, maxWidth: 640, margin: "20px auto 0" }}>
@@ -1331,14 +1434,20 @@ export default function App() {
             <p style={{ fontSize: 12, lineHeight: 1.7, maxWidth: 260, color: "rgba(255,255,255,0.4)" }}>Covering CV1–CV8 and surrounding Coventry areas.</p>
           </div>
           <div style={{ fontSize: 13, lineHeight: 2, color: "rgba(255,255,255,0.4)" }}>
-            <span style={{ display: "block" }}>24/7 Emergency Plumbing — Coventry</span>
+            <span style={{ display: "block", fontWeight: 700, color: "rgba(255,255,255,0.6)", marginBottom: 4 }}>Services</span>
             <Link to="/emergency-plumber-coventry" style={{ color: "#60a5fa", textDecoration: "none", display: "block" }}>Emergency Plumber Coventry</Link>
             <Link to="/boiler-repair-coventry" style={{ color: "#60a5fa", textDecoration: "none", display: "block" }}>Boiler Repair Coventry</Link>
             <Link to="/blocked-drain-coventry" style={{ color: "#60a5fa", textDecoration: "none", display: "block" }}>Blocked Drain Coventry</Link>
             <Link to="/leak-repair-coventry" style={{ color: "#60a5fa", textDecoration: "none", display: "block" }}>Leak Repair Coventry</Link>
           </div>
+          <div style={{ fontSize: 13, lineHeight: 2, color: "rgba(255,255,255,0.4)" }}>
+            <span style={{ display: "block", fontWeight: 700, color: "rgba(255,255,255,0.6)", marginBottom: 4 }}>Areas we cover</span>
+            {EMERGENCY_TOWNS.map((t) => (
+              <Link key={t.slug} to={t.slug} style={{ color: "#60a5fa", textDecoration: "none", display: "block" }}>{`Emergency Plumber ${t.name}`}</Link>
+            ))}
+          </div>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", maxWidth: 260, lineHeight: 1.7 }}>
-            <p>We connect you with local, vetted engineers across Coventry and the West Midlands.</p>
+            <p>We connect you with local, vetted engineers across Coventry, Warwickshire and the West Midlands.</p>
             <div style={{ marginTop: 10, display: "flex", gap: 14 }}>
               <Link to="/privacy" style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none" }}>Privacy Policy</Link>
               <Link to="/terms" style={{ color: "rgba(255,255,255,0.3)", textDecoration: "none" }}>Terms</Link>
