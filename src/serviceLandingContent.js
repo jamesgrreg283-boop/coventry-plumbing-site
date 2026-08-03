@@ -80,6 +80,90 @@ export const EMERGENCY_TOWN_PATHS = new Set([
   ...EMERGENCY_TOWNS.map((t) => t.slug),
 ]);
 
+/**
+ * Neighbourhood cards for the "Areas we cover" section.
+ * Must match the page town — never reuse Coventry cards on other towns.
+ */
+export const AREA_COVERAGE_BY_PATH = {
+  "/": [
+    { title: "Coventry City Centre", places: "Cathedral Quarter, Spon End, Hillfields" },
+    { title: "North Coventry", places: "Radford, Holbrooks, Foleshill" },
+    { title: "South Coventry", places: "Cheylesmore, Earlsdon, Stivichall" },
+    { title: "Warwickshire surrounds", places: "Kenilworth, Leamington Spa, Nuneaton" },
+  ],
+  "/emergency-plumber-coventry": [
+    { title: "City Centre & east", places: "Cathedral Quarter, Hillfields, Stoke, Binley, Walsgrave" },
+    { title: "North Coventry", places: "Radford, Holbrooks, Foleshill, Longford" },
+    { title: "South & west", places: "Cheylesmore, Earlsdon, Canley, Tile Hill, Allesley" },
+    { title: "Postcodes", places: "CV1, CV2, CV3, CV4, CV5, CV6 and nearby CV7–CV8 when capacity allows" },
+  ],
+  "/boiler-repair-coventry": [
+    { title: "Coventry City Centre", places: "Cathedral Quarter, Spon End, Hillfields" },
+    { title: "North Coventry", places: "Radford, Holbrooks, Foleshill" },
+    { title: "South Coventry", places: "Cheylesmore, Earlsdon, Stivichall" },
+    { title: "Wider CV area", places: "Tile Hill, Canley, Binley and nearby Warwickshire postcodes" },
+  ],
+  "/blocked-drain-coventry": [
+    { title: "Coventry City Centre", places: "Cathedral Quarter, Spon End, Hillfields" },
+    { title: "North Coventry", places: "Radford, Holbrooks, Foleshill" },
+    { title: "South Coventry", places: "Cheylesmore, Earlsdon, Stivichall" },
+    { title: "Wider CV area", places: "Tile Hill, Finham, Willenhall and nearby towns" },
+  ],
+  "/leak-repair-coventry": [
+    { title: "Coventry City Centre", places: "Cathedral Quarter, Spon End, Hillfields" },
+    { title: "North Coventry", places: "Radford, Holbrooks, Foleshill" },
+    { title: "South Coventry", places: "Cheylesmore, Earlsdon, Stivichall" },
+    { title: "Wider CV area", places: "Canley, Tile Hill, Binley and surrounding postcodes" },
+  ],
+  "/emergency-plumber-nuneaton": [
+    { title: "Central Nuneaton", places: "Town centre, Weddington, Whitestone" },
+    { title: "South & east", places: "Attleborough, Chilvers Coton, Horeston Grange" },
+    { title: "West", places: "Stockingford and surrounding streets" },
+    { title: "Postcodes & nearby", places: "CV10, CV11 — plus Bedworth when capacity allows" },
+  ],
+  "/emergency-plumber-bedworth": [
+    { title: "Central Bedworth", places: "Town centre and main residential streets" },
+    { title: "Villages & edges", places: "Bulkington, Exhall, Ash Green" },
+    { title: "Corridor links", places: "Keresley, Longford and the A444 corridor" },
+    { title: "Postcodes & nearby", places: "CV12 — plus Nuneaton and north Coventry when capacity allows" },
+  ],
+  "/emergency-plumber-rugby": [
+    { title: "Rugby town", places: "Centre, Bilton, Hillmorton" },
+    { title: "North & east estates", places: "Brownsover, Newbold-on-Avon, Clifton upon Dunsmore" },
+    { title: "West & south", places: "Cawston, Dunchurch" },
+    { title: "Postcodes", places: "CV21, CV22, CV23" },
+  ],
+  "/emergency-plumber-warwick": [
+    { title: "Warwick town", places: "Town centre, Mill Street area, historic core" },
+    { title: "Modern estates", places: "Chase Meadow, Woodloes, Myton" },
+    { title: "Nearby villages", places: "Leek Wootton, Hatton" },
+    { title: "Postcodes & nearby", places: "CV34, CV35 — plus the Leamington corridor when capacity allows" },
+  ],
+  "/emergency-plumber-leamington-spa": [
+    { title: "Leamington centre", places: "Parade, Old Town, Lansdowne / Clarendon streets" },
+    { title: "North & east", places: "Lillington, Cubbington, Milverton" },
+    { title: "South", places: "Whitnash, Sydenham" },
+    { title: "Postcodes & nearby", places: "CV31, CV32 — plus Warwick and Kenilworth corridors when capacity allows" },
+  ],
+  "/emergency-plumber-kenilworth": [
+    { title: "Kenilworth centre", places: "High Street, Abbey Fields, St John's" },
+    { title: "North & west", places: "Crackley, Burton Green" },
+    { title: "Edges", places: "Leek Wootton edge and surrounding roads" },
+    { title: "Postcodes & nearby", places: "CV8 — plus Warwick and southern Coventry when capacity allows" },
+  ],
+};
+
+export function getAreaCoverage(pathname) {
+  return AREA_COVERAGE_BY_PATH[pathname] || AREA_COVERAGE_BY_PATH["/"];
+}
+
+export function getAreaCoverageIntro(pathname, townName) {
+  if (pathname === "/" || pathname.includes("coventry")) {
+    return "We aim for introductions across Coventry and nearby areas — tell us your postcode in the form and we will confirm coverage.";
+  }
+  return `Neighbourhoods and postcodes we commonly cover for ${townName} emergency plumbing introductions — tell us your postcode and we will confirm whether an engineer can attend.`;
+}
+
 const NUNEATON_FAQ = [
   {
     q: "Do you cover emergency plumbing across Nuneaton?",

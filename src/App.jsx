@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { SERVICE_LANDINGS, EMERGENCY_PLUMBER_FAQ, EMERGENCY_TOWNS, EMERGENCY_TOWN_PATHS } from "./serviceLandingContent.js";
+import { SERVICE_LANDINGS, EMERGENCY_PLUMBER_FAQ, EMERGENCY_TOWNS, EMERGENCY_TOWN_PATHS, getAreaCoverage, getAreaCoverageIntro } from "./serviceLandingContent.js";
 import {
   SITE_URL,
   PHONE,
@@ -87,13 +87,6 @@ const EMERGENCY_SERVICES = [
     desc: "Visible leaks and urgent damp or water damage. We dispatch local vetted plumbers who can locate and repair leaks before bills and damage mount.",
     path: "/leak-repair-coventry",
   },
-];
-
-const COVENTRY_AREAS = [
-  { title: "Coventry City Centre", places: "Cathedral Quarter, Spon End, Hillfields" },
-  { title: "North Coventry", places: "Radford, Holbrooks, Foleshill" },
-  { title: "South Coventry", places: "Cheylesmore, Earlsdon, Stivichall" },
-  { title: "Warwickshire surrounds", places: "Kenilworth, Leamington Spa, Nuneaton" },
 ];
 
 const WHY_US = [
@@ -454,7 +447,7 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
           ))}
         </div>
       </div>
-      {landing.extraFaqItems?.length ? (
+      {landing.extraFaqItems?.length && !isEmergencyPage ? (
         <div style={{ maxWidth: contentMaxWidth, margin: "48px auto 0" }}>
           <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>FAQ</p>
           <h2 className="syne-heading" style={{ ...sectionHeading, marginBottom: 20 }}>{`${townName} emergency plumber questions`}</h2>
@@ -549,10 +542,15 @@ function LegalPage({ heading, body = [] }) {
 
 export default function App() {
   const location = useLocation();
-  const pathname = location.pathname.toLowerCase().replace(/\/+$/, "") || "/";
+  const pathname = useMemo(
+    () => location.pathname.toLowerCase().replace(/\/+$/, "") || "/",
+    [location.pathname],
+  );
   const isKnownRoute = KNOWN_PATHS.has(pathname);
   const isEmergencyPage = EMERGENCY_TOWN_PATHS.has(pathname);
   const currentTownName = SERVICE_LANDINGS[pathname]?.townName || "Coventry";
+  const areaCards = getAreaCoverage(pathname);
+  const areaIntro = getAreaCoverageIntro(pathname, currentTownName);
   const phoneCtaHiddenStyle = {};
   const pageConfig = useMemo(() => {
     const base = SERVICE_PAGES[pathname];
@@ -762,10 +760,12 @@ export default function App() {
   const organizationLd = organizationSchema();
   const websiteLd = websiteSchema();
   const landingFaqItems = SERVICE_LANDINGS[pathname]?.extraFaqItems || [];
-  const faqSchemaMainEntity = [
-    ...landingFaqItems.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
-    ...FAQS.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
-  ];
+  const pageFaqs = landingFaqItems.length ? landingFaqItems : FAQS;
+  const faqSchemaMainEntity = pageFaqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  }));
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -1170,7 +1170,9 @@ export default function App() {
           <div className="hero-left-stack">
             <div className="fu1" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 0 3px rgba(34,197,94,0.3)" }} />
-              <span style={{ color: "#86efac", fontSize: 13, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>24/7 enquiry line · Coventry & nearby</span>
+              <span style={{ color: "#86efac", fontSize: 13, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                {isEmergencyPage ? `24/7 enquiry line · ${currentTownName}` : "24/7 enquiry line · Coventry & nearby"}
+              </span>
             </div>
             <h1 className="fu2 syne-heading syne-heading-hero syne-heading-hero-left" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(34px, 5.5vw, 62px)", color: "white", lineHeight: 1.08, marginBottom: 14 }}>
               {pageConfig.landing ? (
@@ -1207,8 +1209,8 @@ export default function App() {
                 <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_hero_foot", { page: pathname }); }} className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(26px, 3vw, 34px)", color: "white", textDecoration: "none", letterSpacing: "-0.02em", display: "inline-block", lineHeight: 1.1 }}>{PHONE}</a>
                 <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13, marginTop: 8, lineHeight: 1.5 }}>
                   {isEmergencyPage
-                    ? `Speak to a real person now. We dispatch local vetted plumbers across ${currentTownName} for urgent plumbing issues.`
-                    : "Speak to a local engineer quickly. We connect you with trusted plumbers across Coventry for urgent and general plumbing issues."}
+                    ? `Speak to a real person now. We introduce independent engineers across ${currentTownName} for urgent plumbing issues — availability depends on capacity.`
+                    : "Speak to a local engineer quickly. We introduce trusted plumbers across Coventry for urgent and general plumbing issues."}
                 </p>
               </div>
               <div className="hero-left-foot-stats">
@@ -1315,8 +1317,10 @@ export default function App() {
                   <Link to="/emergency-plumber-coventry" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }} onClick={() => trackEvent("inline_link_emergency_service_home", { page: pathname })}>dedicated emergency plumber Coventry</Link>
                   {" "}page. Photos are for illustration — your engineer is assigned when you enquire.
                 </>
+              ) : isEmergencyPage ? (
+                <>From urgent repairs to same-day support, we introduce independent engineers for real jobs across {currentTownName}. Photos are for illustration and may vary by attending engineer.</>
               ) : (
-                "From urgent repairs to same-day support, we dispatch local vetted plumbers for real jobs across Coventry. Photos are for illustration and may vary by attending plumber."
+                <>From urgent repairs to same-day support, we introduce independent engineers for real jobs across Coventry. Photos are for illustration and may vary by attending engineer.</>
               )}
             </p>
           </div>
@@ -1349,15 +1353,17 @@ export default function App() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <div className="areas-section-title-wrap">
               <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(24px, 3vw, 36px)", color: "#1e3a8a", lineHeight: 1.2 }}>
-                {isEmergencyPage && currentTownName !== "Coventry" ? `Areas we cover around ${currentTownName}` : "Areas we cover in Coventry"}
+                {isEmergencyPage && currentTownName !== "Coventry"
+                  ? `Areas we cover around ${currentTownName}`
+                  : "Areas we cover in Coventry"}
               </h2>
             </div>
             <p style={{ color: "#64748b", fontSize: 16, lineHeight: 1.65, maxWidth: 640, margin: "20px auto 0" }}>
-              We aim for fast introductions across Coventry and nearby areas — tell us your postcode in the form and we will confirm coverage.
+              {areaIntro}
             </p>
           </div>
           <div className="areas-grid">
-            {COVENTRY_AREAS.map((a) => (
+            {areaCards.map((a) => (
               <div key={a.title} className="area-cover-card">
                 <h3>{a.title}</h3>
                 <p>{a.places}</p>
@@ -1410,10 +1416,12 @@ export default function App() {
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 44 }}>
             <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>FAQ</p>
-            <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(24px, 3vw, 36px)", color: "#0f172a" }}>Common questions</h2>
+            <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(24px, 3vw, 36px)", color: "#0f172a" }}>
+              {isEmergencyPage && currentTownName !== "Coventry" ? `${currentTownName} plumbing questions` : "Common questions"}
+            </h2>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {FAQS.map((faq, i) => <FaqItem key={i} q={faq.q} a={faq.a} />)}
+            {pageFaqs.map((faq, i) => <FaqItem key={i} q={faq.q} a={faq.a} />)}
           </div>
           <div style={{ textAlign: "center", marginTop: 36 }}>
             <button onClick={() => scrollToForm()} className="btn-primary" style={{ fontSize: 15, padding: "13px 28px" }}>Still have questions? Get in touch ⚡</button>
@@ -1451,7 +1459,11 @@ export default function App() {
               <span style={{ fontSize: 18 }}>🔧</span>
               <span className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, color: "white", fontSize: 15 }}>coventryplumbing247</span>
             </div>
-            <p style={{ fontSize: 12, lineHeight: 1.7, maxWidth: 260, color: "rgba(255,255,255,0.4)" }}>Covering CV1–CV8 and surrounding Coventry areas.</p>
+            <p style={{ fontSize: 12, lineHeight: 1.7, maxWidth: 260, color: "rgba(255,255,255,0.4)" }}>
+              {isEmergencyPage && currentTownName !== "Coventry"
+                ? `Covering ${currentTownName} and nearby postcodes when engineer capacity allows.`
+                : "Covering CV1–CV8 and surrounding Coventry areas."}
+            </p>
           </div>
           <div style={{ fontSize: 13, lineHeight: 2, color: "rgba(255,255,255,0.4)" }}>
             <span style={{ display: "block", fontWeight: 700, color: "rgba(255,255,255,0.6)", marginBottom: 4 }}>Services</span>
