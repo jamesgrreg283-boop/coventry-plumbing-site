@@ -1,16 +1,22 @@
-# React + Vite
+# coventryplumbing247
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Lead-generation and introduction website for emergency plumbing enquiries across Coventry and nearby Warwickshire.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 + Vite 8
+- Client SPA with **build-time prerender** for every indexable route (meaningful HTML for crawlers)
+- Deployed on Vercel
 
-## React Compiler
+## Scripts
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `npm run dev` — local development
+- `npm run build` — production build + prerender (`scripts/prerender.mjs`)
+- `npm run preview` — preview `dist/`
 
-## Expanding the ESLint configuration
+## SEO notes
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Route metadata lives in `src/seoConfig.js`
+- Landing body copy in `src/serviceLandingContent.js`
+- Ads conversion `AW-18098618469/99svCK61hK1cEOWAjLZD` fires on telephone link clicks only
+- Do not invent reviews, ratings, arrival times or job counts

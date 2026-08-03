@@ -1,14 +1,21 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { SERVICE_LANDINGS, EMERGENCY_PLUMBER_FAQ, EMERGENCY_TOWNS, EMERGENCY_TOWN_PATHS } from "./serviceLandingContent.js";
-
-const PHONE = "024 7590 5456";
-const PHONE_TEL = "+442475905456";
+import {
+  SITE_URL,
+  PHONE,
+  PHONE_TEL,
+  OPERATOR_NAME,
+  OPERATOR_EMAIL,
+  KNOWN_PATHS,
+  INDEXABLE_ROUTES,
+  organizationSchema,
+  websiteSchema,
+  canonicalFor,
+} from "./seoConfig.js";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mpqodvqk";
-const SITE_URL = "https://coventryplumbing247.co.uk";
-const OPERATOR_NAME = "coventryplumbing247 Lead Services";
-const OPERATOR_EMAIL = "support@coventryplumbing247.co.uk";
+const SEO_BY_PATH = Object.fromEntries(INDEXABLE_ROUTES.map((r) => [r.path, r]));
 
 const ISSUES = [
   { id: "burst-pipe-water-leak", label: "Burst Pipe/Water Leak", icon: "💧", desc: "Urgent water leak support" },
@@ -38,17 +45,12 @@ const PROPERTY_TYPES = [
   { id: "commercial", label: "🏪 Commercial" },
 ];
 
+/** Honest process points only — no invented job counts, ratings or arrival guarantees. */
 const TRUST_STATS = [
-  { value: "47+", label: "Coventry homeowners helped this month" },
-  { value: "< 60 min", label: "Average engineer response time" },
-  { value: "4.9 ★", label: "Average customer satisfaction" },
-  { value: "24/7", label: "Always available, no exceptions" },
-];
-
-const TESTIMONIALS = [
-  { name: "Sarah M.", location: "Coventry, CV1", text: "Burst pipe at 11pm on a Sunday — they had someone at my door within 40 minutes. Absolute lifesavers. Couldn't recommend more.", stars: 5 },
-  { name: "James T.", location: "Coventry, CV2", text: "Boiler packed in during January. Got connected to a local engineer same evening. Fair price, no nonsense. Will definitely use again.", stars: 5 },
-  { name: "Priya K.", location: "Coventry, CV6", text: "Really impressed — the form was simple, they called me back within minutes and the plumber fixed our blocked drain quickly.", stars: 5 },
+  { value: "24/7", label: "Enquiry line answered around the clock" },
+  { value: "Local", label: "Independent engineers across CV postcodes" },
+  { value: "Clear", label: "Pricing confirmed by the attending engineer" },
+  { value: "Honest", label: "Introduction service — not the contractor" },
 ];
 
 /** Stock photos of plumbers at work (Unsplash) — illustrative only; engineers are independent contractors. */
@@ -95,115 +97,116 @@ const COVENTRY_AREAS = [
 ];
 
 const WHY_US = [
-  { icon: "⚡", title: "Fast Response", desc: "Local engineers dispatched fast — often within the hour for emergencies." },
-  { icon: "📍", title: "Local & Verified", desc: "We connect you with Gas Safe registered engineers where required." },
-  { icon: "🕐", title: "24/7 Cover", desc: "Day or night, weekends or bank holidays — we're always available." },
-  { icon: "💷", title: "Clear pricing", desc: "What you pay depends on the engineer and the job — always confirm costs before work starts." },
+  { icon: "⚡", title: "Urgent enquiries prioritised", desc: "Tell us the symptom and postcode — we route to available independent engineers as capacity allows." },
+  { icon: "📍", title: "Local introductions", desc: "Where gas work is involved, we route towards appropriately registered engineers." },
+  { icon: "🕐", title: "24/7 enquiry line", desc: "Day or night, weekends or bank holidays — the line is answered so we can attempt a match." },
+  { icon: "💷", title: "Clear pricing model", desc: "What you pay depends on the engineer and the job — always confirm costs before work starts." },
 ];
 
 const STEPS = [
-  { num: "01", title: "Tell us your issue", desc: "Use the quick selector or fill in the form — takes under 60 seconds." },
-  { num: "02", title: "We connect you", desc: "We connect you with local, vetted engineers in Coventry." },
-  { num: "03", title: "Get it fixed fast", desc: "Your engineer arrives and sorts the problem — job done." },
+  { num: "01", title: "Tell us your issue", desc: "Call or use the short form — name, phone, postcode and what is wrong." },
+  { num: "02", title: "We introduce you", desc: "We connect you with an independent local engineer who can take the job." },
+  { num: "03", title: "Agree work directly", desc: "The engineer confirms timing, pricing and scope with you before any work begins." },
 ];
 
 const FAQS = [
-  { q: "How quickly can a plumber get to me?", a: "For emergencies, we aim to dispatch a local vetted plumber within minutes. Response times vary, but many urgent call-outs are attended within 30–60 minutes depending on your location, time of day, and live plumber availability." },
-  { q: "Do you cover my area?", a: "We cover all Coventry postcodes including CV1, CV2, CV3, CV4, CV5, CV6, CV7, CV8 and surrounding areas. If you're unsure, submit your postcode in the form and we'll confirm whether we can help." },
+  { q: "How quickly can a plumber get to me?", a: "Arrival depends on your postcode, time of day, traffic and whether an independent engineer is free. We do not guarantee a fixed arrival time. The engineer who calls you back will give a realistic window." },
+  { q: "Do you cover my area?", a: "We regularly introduce engineers for Coventry postcodes including CV1–CV8 and nearby Warwickshire towns when capacity allows. Submit your postcode or call and we will confirm whether we can help." },
   { q: "Is there a call-out fee?", a: "Call-out fees and minimum charges depend on the engineer and the type of job. Your engineer will explain any costs before work begins — always confirm pricing on the phone or on site." },
-  { q: "Do you dispatch Gas Safe plumbers?", a: "Yes. We dispatch Gas Safe registered plumbers where required, and all plumbers in our local network are vetted and insured." },
-  { q: "Can I use this service if I'm a tenant?", a: "Absolutely. We work with homeowners, tenants, and landlords. If you're renting, we'd recommend notifying your landlord at the same time — but for emergencies, just contact us first." },
-  { q: "What if my issue isn't listed?", a: "No problem — just select 'Other plumbing issue' in the form and describe your problem. We handle all plumbing and heating issues, big or small." },
+  { q: "Are you the plumbing company that attends?", a: "No. coventryplumbing247 is a lead generation and introduction service. Independent third-party engineers assess, quote and carry out work. Any contract is between you and the engineer." },
+  { q: "Do you route Gas Safe registered engineers?", a: "Where gas work is required, we aim to introduce appropriately registered engineers. Always ask the attending engineer to confirm their registration for the work they propose." },
+  { q: "Can I use this service if I'm a tenant?", a: "Yes. Homeowners, tenants and landlords can enquire. If you rent, notify your landlord or agent as well — for an active leak, getting help organised is the priority." },
+  { q: "What if my issue isn't listed?", a: "Select 'Other plumbing issue' and describe the problem. We will confirm whether an engineer introduction is suitable." },
 ];
 
 const SERVICE_PAGES = {
   "/": {
-    title: "Reliable Plumbing Services in Coventry | Emergency & General | coventryplumbing247",
-    description: "Local plumbing support across Coventry and nearby areas — introductions to vetted engineers for everyday jobs, heating, drains and leaks. For urgent issues, call now for fast local help.",
-    h1Prefix: "Reliable plumbing services",
+    title: SEO_BY_PATH["/"].title,
+    description: SEO_BY_PATH["/"].description,
+    h1Prefix: "Reliable plumbing help",
     h1Highlight: "in Coventry",
-    h1Suffix: "Emergency & general help",
-    intro: "We connect you with local, vetted engineers for repairs, maintenance and urgent call-outs. Based around Coventry and surrounding towns — use the form for any job, or call now for immediate help with any plumbing issue.",
+    h1Suffix: "Emergency & everyday introductions",
+    intro: "We introduce you to independent local engineers for repairs, maintenance and urgent call-outs across Coventry and nearby towns. Call now or use the form — confirm pricing directly with the engineer who attends.",
   },
   "/emergency-plumber-coventry": {
-    title: "Emergency Plumber Coventry | 24 Hour Urgent Plumbing Help | coventryplumbing247",
-    description: "Need an emergency plumber Coventry homeowners can call 24/7? We dispatch local vetted plumbers for burst pipes, leaks, blocked drains, boiler breakdowns and no hot water across Coventry.",
+    title: SEO_BY_PATH["/emergency-plumber-coventry"].title,
+    description: SEO_BY_PATH["/emergency-plumber-coventry"].description,
     h1Prefix: "24 Hour Emergency",
     h1Highlight: "Plumber Coventry",
-    h1Suffix: "Rapid Local Callouts",
-    intro: "Need emergency plumbing Coventry support right now? We dispatch local vetted plumbers for burst pipes, major leaks, drainage failures, no hot water and boiler breakdowns — day or night across Coventry neighbourhoods.",
+    h1Suffix: "Local Call-Out Introductions",
+    intro: "Need emergency plumbing support in Coventry right now? We introduce independent local engineers for burst pipes, major leaks, drainage failures, no hot water and boiler breakdowns — day or night, subject to engineer availability.",
   },
   "/boiler-repair-coventry": {
-    title: "Boiler Repair Coventry | No Heat or Hot Water | coventryplumbing247",
-    description: "Need boiler repair in Coventry? Fast local engineer connections for no heat, no hot water, pressure issues and faults.",
+    title: SEO_BY_PATH["/boiler-repair-coventry"].title,
+    description: SEO_BY_PATH["/boiler-repair-coventry"].description,
     h1Prefix: "Boiler Repair",
     h1Highlight: "in Coventry",
-    h1Suffix: "Fast Local Engineers",
-    intro: "No heating or hot water? Get connected with a vetted local Coventry engineer in minutes.",
+    h1Suffix: "Local Engineer Introductions",
+    intro: "No heating or hot water? We introduce vetted local engineers. Gas-related work should be confirmed as appropriately registered by the attending engineer.",
   },
   "/blocked-drain-coventry": {
-    title: "Blocked Drain Coventry | Fast Drain Unblocking | coventryplumbing247",
-    description: "Blocked drain in Coventry? Get rapid local help for blocked sinks, toilets, shower drains and outside pipes.",
+    title: SEO_BY_PATH["/blocked-drain-coventry"].title,
+    description: SEO_BY_PATH["/blocked-drain-coventry"].description,
     h1Prefix: "Blocked Drain",
     h1Highlight: "Help in Coventry",
-    h1Suffix: "Quick Unblocking Service",
-    intro: "From blocked sinks to overflowing toilets, we connect you with local, vetted engineers quickly.",
+    h1Suffix: "Local Unblocking Introductions",
+    intro: "From blocked sinks to overflowing toilets, we introduce independent local engineers. Confirm costs before any clearing work starts.",
   },
   "/leak-repair-coventry": {
-    title: "Leak Repair Coventry | Leak Detection & Fixes | coventryplumbing247",
-    description: "Leak repair Coventry for burst pipes, hidden leaks and damp issues. Fast local callouts and transparent pricing.",
+    title: SEO_BY_PATH["/leak-repair-coventry"].title,
+    description: SEO_BY_PATH["/leak-repair-coventry"].description,
     h1Prefix: "Leak Repair",
     h1Highlight: "in Coventry",
-    h1Suffix: "Fast Detection & Fix",
-    intro: "Spotted a leak or damp patch? We help you get local leak repair support quickly and safely.",
+    h1Suffix: "Detection & Fix Introductions",
+    intro: "Spotted a leak or damp patch? If safe, isolate the water supply, then call — we introduce local engineers for assessment and repair.",
   },
   "/emergency-plumber-nuneaton": {
-    title: "Emergency Plumber Nuneaton | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
-    description: "Need an emergency plumber in Nuneaton? We dispatch local vetted engineers 24/7 for burst pipes, leaks, blocked drains, boiler breakdowns and no hot water.",
+    title: SEO_BY_PATH["/emergency-plumber-nuneaton"].title,
+    description: SEO_BY_PATH["/emergency-plumber-nuneaton"].description,
     h1Prefix: "Emergency Plumber",
     h1Highlight: "Nuneaton",
     h1Suffix: "24/7 Urgent Callouts",
-    intro: "Need an emergency plumber Nuneaton households can call right now? We route local vetted plumbers across Attleborough, Stockingford, Weddington, Whitestone, Horeston Grange and Chilvers Coton for burst pipes, leaks, blocked drains and no-hot-water emergencies.",
+    intro: "Need an emergency plumber for Nuneaton? We route introductions to independent engineers across Attleborough, Stockingford, Weddington, Whitestone, Horeston Grange and Chilvers Coton — availability depends on capacity.",
   },
   "/emergency-plumber-bedworth": {
-    title: "Emergency Plumber Bedworth | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
-    description: "Need an emergency plumber in Bedworth? Local vetted engineers dispatched 24/7 across CV12 for burst pipes, leaks, blocked drains, boiler issues and no hot water.",
+    title: SEO_BY_PATH["/emergency-plumber-bedworth"].title,
+    description: SEO_BY_PATH["/emergency-plumber-bedworth"].description,
     h1Prefix: "Emergency Plumber",
     h1Highlight: "Bedworth",
     h1Suffix: "24/7 Urgent Callouts",
-    intro: "Need an emergency plumber Bedworth residents can call out of hours? We route local engineers across CV12 — Bulkington, Exhall, Ash Green, Keresley and Longford — for urgent leaks, burst pipes, blocked drains and boiler failures.",
+    intro: "Need an emergency plumber for Bedworth? We route introductions across CV12 — Bulkington, Exhall, Ash Green, Keresley and Longford — for urgent leaks, burst pipes, blocked drains and boiler failures when engineers are available.",
   },
   "/emergency-plumber-rugby": {
-    title: "Emergency Plumber Rugby | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
-    description: "Need an emergency plumber in Rugby? Local vetted engineers dispatched 24/7 across CV21–CV23 for burst pipes, leaks, blocked drains, boiler breakdowns and no hot water.",
+    title: SEO_BY_PATH["/emergency-plumber-rugby"].title,
+    description: SEO_BY_PATH["/emergency-plumber-rugby"].description,
     h1Prefix: "Emergency Plumber",
     h1Highlight: "Rugby",
     h1Suffix: "24/7 Urgent Callouts",
-    intro: "Need an emergency plumber Rugby residents can call day or night? We route local engineers across CV21, CV22 and CV23 — Bilton, Hillmorton, Brownsover, Cawston, Newbold, Dunchurch and Clifton upon Dunsmore — for urgent plumbing failures.",
+    intro: "Need an emergency plumber for Rugby? We route introductions across CV21–CV23 — Bilton, Hillmorton, Brownsover, Cawston, Newbold, Dunchurch and Clifton upon Dunsmore — subject to independent engineer capacity.",
   },
   "/emergency-plumber-warwick": {
-    title: "Emergency Plumber Warwick | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
-    description: "Need an emergency plumber in Warwick? Local vetted engineers dispatched 24/7 across CV34 and CV35 for burst pipes, leaks, blocked drains, boiler issues and no hot water.",
+    title: SEO_BY_PATH["/emergency-plumber-warwick"].title,
+    description: SEO_BY_PATH["/emergency-plumber-warwick"].description,
     h1Prefix: "Emergency Plumber",
     h1Highlight: "Warwick",
     h1Suffix: "24/7 Urgent Callouts",
-    intro: "Need an emergency plumber Warwick households can call out of hours? We route local engineers across CV34 and CV35 — town centre, Chase Meadow, Woodloes, Myton, Leek Wootton and Hatton — for urgent leaks, burst pipes and boiler failures.",
+    intro: "Need an emergency plumber for Warwick? We route introductions across CV34 and CV35 — town centre, Chase Meadow, Woodloes, Myton, Leek Wootton and Hatton — when an independent engineer can attend.",
   },
   "/emergency-plumber-leamington-spa": {
-    title: "Emergency Plumber Leamington Spa | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
-    description: "Need an emergency plumber in Leamington Spa? Local vetted engineers dispatched 24/7 across CV31 and CV32 for burst pipes, leaks, blocked drains and no hot water.",
+    title: SEO_BY_PATH["/emergency-plumber-leamington-spa"].title,
+    description: SEO_BY_PATH["/emergency-plumber-leamington-spa"].description,
     h1Prefix: "Emergency Plumber",
     h1Highlight: "Leamington Spa",
     h1Suffix: "24/7 Urgent Callouts",
-    intro: "Need an emergency plumber Leamington Spa residents can call at any hour? We route local engineers across CV31 and CV32 — centre, Whitnash, Sydenham, Lillington, Milverton and Cubbington — for urgent leaks, burst pipes and shared-riser flat emergencies.",
+    intro: "Need an emergency plumber for Leamington Spa? We route introductions across CV31 and CV32 — centre, Whitnash, Sydenham, Lillington, Milverton and Cubbington — including shared-riser flat emergencies where capacity allows.",
   },
   "/emergency-plumber-kenilworth": {
-    title: "Emergency Plumber Kenilworth | 24/7 Urgent Plumbing Help | Coventry Plumbing 24/7",
-    description: "Need an emergency plumber in Kenilworth? Local vetted engineers dispatched 24/7 across CV8 for burst pipes, leaks, blocked drains, boiler issues and no hot water.",
+    title: SEO_BY_PATH["/emergency-plumber-kenilworth"].title,
+    description: SEO_BY_PATH["/emergency-plumber-kenilworth"].description,
     h1Prefix: "Emergency Plumber",
     h1Highlight: "Kenilworth",
     h1Suffix: "24/7 Urgent Callouts",
-    intro: "Need an emergency plumber Kenilworth households can call around the clock? We route local engineers across CV8 — town centre, Abbey Fields, St John's, Crackley, Burton Green and Leek Wootton — for urgent leaks, burst pipes and unvented-cylinder failures.",
+    intro: "Need an emergency plumber for Kenilworth? We route introductions across CV8 — town centre, Abbey Fields, St John's, Crackley, Burton Green and Leek Wootton — subject to engineer availability.",
   },
 };
 
@@ -219,16 +222,18 @@ const LEGAL_PAGES = {
       "We process your data based on legitimate interest to provide our service and respond to your enquiry.",
       "We retain your data only for as long as necessary to fulfil your enquiry and for a reasonable period thereafter for service improvement and record-keeping.",
       "You can contact us at any time to ask about your personal data, including requests for access, correction, or deletion where applicable.",
+      "Operator: coventryplumbing247 Lead Services. Email support@coventryplumbing247.co.uk for data requests, including your full name, postcode and request type.",
     ],
   },
   "/terms": {
-    title: "Terms & Conditions | coventryplumbing247",
+    title: "Terms of Use | coventryplumbing247",
     heading: "Terms & Conditions",
     body: [
       "When you submit an enquiry through this website, we pass your request to independent engineers who may contact you directly to discuss availability, pricing, and next steps.",
       "We are not responsible for the quality, safety, pricing, or outcome of any work carried out by third-party engineers. Any agreement for work is made directly between you and the engineer.",
       "Any guarantees or warranties are provided solely by the engineer carrying out the work, where applicable.",
       "Please confirm scope, cost, response time, and terms directly with the engineer before agreeing to any work.",
+      "Availability of engineers is not guaranteed and depends on independent capacity in your area at the time of enquiry.",
     ],
   },
   "/cookies": {
@@ -236,8 +241,9 @@ const LEGAL_PAGES = {
     heading: "Cookie Policy",
     body: [
       "We may use cookies and similar technologies to improve website performance, understand user behaviour, and enhance your experience.",
-      "This may include essential cookies needed for basic site functionality and analytics cookies that help us understand how visitors use the website.",
-      "By continuing to use this site, you agree to the use of cookies as described in this policy. You can manage cookies through your browser settings at any time.",
+      "This may include essential cookies needed for basic site functionality and advertising or analytics cookies that help us measure enquiries and improve the site.",
+      "Google Ads tags may be used to measure click-to-call and other conversion events. You can manage cookies through your browser settings at any time.",
+      "By continuing to use this site, you agree to the use of cookies as described in this policy.",
     ],
   },
 };
@@ -464,22 +470,38 @@ function ServiceLandingContent({ landing, pagePath, scrollToForm }) {
   );
 }
 
-function StarRating({ count }) {
+function NotFoundPage() {
+  useEffect(() => {
+    document.title = "Page not found | coventryplumbing247";
+    upsertMetaTag("name", "description", "That page does not exist. Call 024 7590 5456 for urgent plumbing help in Coventry.");
+    upsertMetaTag("name", "robots", "noindex,follow");
+    upsertCanonical(`${SITE_URL}/404`);
+  }, []);
   return (
-    <div style={{ display: "flex", gap: 2 }}>
-      {Array.from({ length: count }).map((_, i) => (
-        <span key={i} style={{ color: "#f59e0b", fontSize: 16 }}>★</span>
-      ))}
+    <div style={{ fontFamily: "'DM Sans', sans-serif", minHeight: "100vh", background: "#0f172a", color: "white", padding: "80px 24px", textAlign: "center" }}>
+      <h1 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(28px, 4vw, 44px)", marginBottom: 16 }}>Page not found</h1>
+      <p style={{ color: "rgba(255,255,255,0.75)", maxWidth: 480, margin: "0 auto 24px", lineHeight: 1.6 }}>This URL is not a published page. For urgent plumbing help in Coventry and nearby areas, call the enquiry line.</p>
+      <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_404"); }} className="btn-primary" style={{ display: "inline-flex", padding: "14px 28px", borderRadius: 14, textDecoration: "none", background: "linear-gradient(135deg, #0ea5e9, #6366f1)", color: "white", fontWeight: 800, marginBottom: 20 }}>Call {PHONE}</a>
+      <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+        <Link to="/" style={{ color: "#93c5fd", fontWeight: 700 }}>Homepage</Link>
+        <Link to="/emergency-plumber-coventry" style={{ color: "#93c5fd", fontWeight: 700 }}>Emergency plumber Coventry</Link>
+      </div>
     </div>
   );
 }
 
+/** Dedupes Ads conversion so a single click cannot fire twice from stacked handlers. */
+let lastPhoneConversionAt = 0;
 function trackEvent(name, params = {}) {
   if (window.gtag) window.gtag("event", name, params);
   if (window.dataLayer?.push) window.dataLayer.push({ event: name, ...params });
 }
 
 function trackPhoneCallConversion() {
+  const now = Date.now();
+  if (now - lastPhoneConversionAt < 1500) return;
+  lastPhoneConversionAt = now;
+  trackEvent("click_to_call", { page: typeof window !== "undefined" ? window.location.pathname : "" });
   if (window.gtag) {
     window.gtag("event", "conversion", {
       send_to: "AW-18098618469/99svCK61hK1cEOWAjLZD",
@@ -527,12 +549,14 @@ function LegalPage({ heading, body = [] }) {
 
 export default function App() {
   const location = useLocation();
-  const pathname = location.pathname.toLowerCase();
+  const pathname = location.pathname.toLowerCase().replace(/\/+$/, "") || "/";
+  const isKnownRoute = KNOWN_PATHS.has(pathname);
   const isEmergencyPage = EMERGENCY_TOWN_PATHS.has(pathname);
   const currentTownName = SERVICE_LANDINGS[pathname]?.townName || "Coventry";
   const phoneCtaHiddenStyle = {};
   const pageConfig = useMemo(() => {
-    const base = SERVICE_PAGES[pathname] || SERVICE_PAGES["/"];
+    const base = SERVICE_PAGES[pathname];
+    if (!base) return null;
     return SERVICE_LANDINGS[pathname] ? { ...base, landing: SERVICE_LANDINGS[pathname] } : base;
   }, [pathname]);
   const legalPage = LEGAL_PAGES[pathname];
@@ -583,21 +607,28 @@ export default function App() {
   }, [pathname]);
 
   useEffect(() => {
+    if (!isKnownRoute) {
+      document.title = "Page not found | coventryplumbing247";
+      upsertMetaTag("name", "robots", "noindex,follow");
+      return;
+    }
     if (legalPage) {
       document.title = legalPage.title;
       upsertMetaTag("name", "description", `${legalPage.heading} for coventryplumbing247.`);
-      upsertCanonical(`${SITE_URL}${pathname}`);
+      upsertMetaTag("name", "robots", "index,follow");
+      upsertCanonical(canonicalFor(pathname));
       return;
     }
 
     document.title = pageConfig.title;
     upsertMetaTag("name", "description", pageConfig.description);
+    upsertMetaTag("name", "robots", "index,follow");
     upsertMetaTag("property", "og:title", pageConfig.title);
     upsertMetaTag("property", "og:description", pageConfig.description);
     upsertMetaTag("property", "og:type", "website");
-    upsertMetaTag("property", "og:url", `${SITE_URL}${pathname === "/" ? "" : pathname}`);
-    upsertCanonical(`${SITE_URL}${pathname === "/" ? "" : pathname}`);
-  }, [legalPage, pageConfig, pathname]);
+    upsertMetaTag("property", "og:url", canonicalFor(pathname));
+    upsertCanonical(canonicalFor(pathname));
+  }, [legalPage, pageConfig, pathname, isKnownRoute]);
 
   const scrollToForm = (issueId) => {
     if (issueId) {
@@ -683,6 +714,7 @@ export default function App() {
         trackEvent("lead_submit_success", { issue: issueLabel, urgency: urgencyLabel, page: pathname });
         setSubmitted(true);
       } else {
+        trackEvent("lead_submit_failed", { page: pathname, status: res.status });
         let msg = "Something went wrong. Please try again or call us.";
         try {
           const data = await res.json();
@@ -694,6 +726,7 @@ export default function App() {
         alert(msg);
       }
     } catch {
+      trackEvent("lead_submit_failed", { page: pathname, reason: "network" });
       alert("Network error — check your connection or call us directly.");
     }
     setLoading(false);
@@ -713,39 +746,21 @@ export default function App() {
 
   const borderColor = (field) => errors[field] ? "#ef4444" : "#e2e8f0";
 
+  if (!isKnownRoute) {
+    return <NotFoundPage />;
+  }
+
   if (legalPage) {
     return <LegalPage heading={legalPage.heading} body={legalPage.body} />;
   }
 
-  const canonicalUrl = `${SITE_URL}${pathname === "/" ? "" : pathname}`;
-  const baseAreaServed = ["Coventry", "CV1", "CV2", "CV3", "CV4", "CV5", "CV6", "CV7", "CV8"];
-  const townSpecificArea =
-    pathname === "/emergency-plumber-nuneaton" ? ["Nuneaton", "CV10", "CV11", "Attleborough", "Stockingford", "Weddington", "Chilvers Coton"]
-    : pathname === "/emergency-plumber-bedworth" ? ["Bedworth", "CV12", "Bulkington", "Exhall", "Ash Green", "Keresley", "Longford"]
-    : pathname === "/emergency-plumber-rugby" ? ["Rugby", "CV21", "CV22", "CV23", "Bilton", "Hillmorton", "Brownsover", "Cawston", "Dunchurch"]
-    : pathname === "/emergency-plumber-warwick" ? ["Warwick", "CV34", "CV35", "Chase Meadow", "Woodloes", "Myton", "Hatton"]
-    : pathname === "/emergency-plumber-leamington-spa" ? ["Royal Leamington Spa", "CV31", "CV32", "Whitnash", "Sydenham", "Lillington", "Milverton"]
-    : pathname === "/emergency-plumber-kenilworth" ? ["Kenilworth", "CV8", "Abbey Fields", "Crackley", "Burton Green", "Leek Wootton"]
-    : [];
-  const localBusinessSchema = {
-    "@context": "https://schema.org",
-    "@type": ["Plumber", "LocalBusiness"],
-    "@id": `${SITE_URL}/#business`,
-    name: "Coventry Plumbing 24/7",
-    url: canonicalUrl,
-    telephone: PHONE_TEL,
-    email: OPERATOR_EMAIL,
-    priceRange: "££",
-    areaServed: [...townSpecificArea, ...baseAreaServed],
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Coventry",
-      addressRegion: "West Midlands",
-      addressCountry: "GB",
-    },
-    openingHoursSpecification: [{ "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "00:00", closes: "23:59" }],
-    sameAs: ["https://www.gassaferegister.co.uk/"],
-  };
+  if (!pageConfig) {
+    return <NotFoundPage />;
+  }
+
+  const canonicalUrl = canonicalFor(pathname);
+  const organizationLd = organizationSchema();
+  const websiteLd = websiteSchema();
   const landingFaqItems = SERVICE_LANDINGS[pathname]?.extraFaqItems || [];
   const faqSchemaMainEntity = [
     ...landingFaqItems.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
@@ -759,10 +774,12 @@ export default function App() {
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "Service",
-    serviceType: isEmergencyPage ? `Emergency plumbing in ${currentTownName}` : pageConfig.h1Prefix,
-    provider: { "@type": "LocalBusiness", name: "Coventry Plumbing 24/7", telephone: PHONE_TEL, email: OPERATOR_EMAIL },
+    name: isEmergencyPage ? `Emergency plumbing introductions in ${currentTownName}` : pageConfig.h1Prefix,
+    serviceType: isEmergencyPage ? `Emergency plumbing introductions in ${currentTownName}` : pageConfig.h1Prefix,
+    provider: { "@id": `${SITE_URL}/#organization` },
     areaServed: isEmergencyPage ? currentTownName : "Coventry",
     description: pageConfig.description,
+    url: canonicalUrl,
   };
   const breadcrumbSchema = pathname === "/" ? null : {
     "@context": "https://schema.org",
@@ -786,7 +803,7 @@ export default function App() {
         <div style={{ background: "linear-gradient(135deg, #f0fdf4, #eff6ff)", border: "2px solid #86efac", borderRadius: 14, padding: "28px 18px", textAlign: "center" }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
           <h3 style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 8, color: "#0f172a" }}>We have your request!</h3>
-          <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.6 }}>A local Coventry engineer will be in touch shortly.</p>
+          <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.6 }}>A local engineer will be in touch about your enquiry shortly. Confirm pricing and timing directly with them before any work starts.</p>
         </div>
       ) : (
         <>
@@ -861,8 +878,6 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#f8fafc", color: "#0f172a", overflowX: "hidden", width: "100%", minHeight: "100vh" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html, body, #root { width: 100%; min-height: 100vh; margin: 0; padding: 0; background: #0f172a; }
         .grad-text { background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 60%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -1073,6 +1088,17 @@ export default function App() {
         .syne-heading-hero-left { margin-left: 0 !important; margin-right: 0 !important; text-align: left; max-width: none !important; }
         @media (max-width: 640px) { .hide-mob { display: none !important; } }
         @media (min-width: 641px) { .mob-only { display: none !important; } }
+        .mob-call-bar {
+          position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+          background: linear-gradient(135deg, #0ea5e9, #6366f1);
+          padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+          box-shadow: 0 -4px 24px rgba(99,102,241,0.4);
+        }
+        .mob-call-bar a {
+          display: flex; align-items: center; justify-content: center; gap: 10px;
+          color: white; font-weight: 800; font-size: 17px; text-decoration: none;
+          min-height: 48px; width: 100%; font-family: 'DM Sans', sans-serif;
+        }
         @media (max-width: 720px) {
           .emergency-story-wrap { max-width: 100%; }
           .emergency-story-title { font-size: clamp(28px, 8vw, 38px); }
@@ -1115,7 +1141,8 @@ export default function App() {
         .area-cover-card h3 { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 800; font-size: 1.05rem; color: #1e40af; margin: 0 0 10px; }
         .area-cover-card p { margin: 0; font-size: 14px; color: #64748b; line-height: 1.55; }
       `}</style>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       {breadcrumbSchema ? (
@@ -1143,7 +1170,7 @@ export default function App() {
           <div className="hero-left-stack">
             <div className="fu1" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 0 3px rgba(34,197,94,0.3)" }} />
-              <span style={{ color: "#86efac", fontSize: 13, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>Engineers available now in Coventry</span>
+              <span style={{ color: "#86efac", fontSize: 13, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>24/7 enquiry line · Coventry & nearby</span>
             </div>
             <h1 className="fu2 syne-heading syne-heading-hero syne-heading-hero-left" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(34px, 5.5vw, 62px)", color: "white", lineHeight: 1.08, marginBottom: 14 }}>
               {pageConfig.landing ? (
@@ -1154,8 +1181,8 @@ export default function App() {
             </h1>
             {isEmergencyPage ? (
               <div className="fu3" style={{ marginBottom: 12, padding: "10px 14px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.07)", display: "inline-flex", flexDirection: "column", gap: 4 }}>
-                <span style={{ color: "rgba(255,255,255,0.94)", fontSize: 13, fontWeight: 700 }}>Plumbers available near you now</span>
-                <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 600 }}>Average arrival: 30-60 minutes</span>
+                <span style={{ color: "rgba(255,255,255,0.94)", fontSize: 13, fontWeight: 700 }}>Introduction service · independent engineers</span>
+                <span style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, fontWeight: 600 }}>Arrival windows depend on live engineer capacity</span>
               </div>
             ) : null}
             <p className="fu3" style={{ fontSize: "clamp(16px, 2vw, 18px)", color: "rgba(255,255,255,0.78)", lineHeight: 1.65, marginBottom: 14, maxWidth: "min(40rem, 100%)" }}>
@@ -1167,7 +1194,7 @@ export default function App() {
             </div>
             <div className="fu3" style={{ width: "100%" }}>
               <div className="hero-trust-badges">
-                {["24/7 Service", "Local Coventry Plumbers", "⚡ Fast Response", "Gas Safe where required"].map(b => <span key={b} className="badge">{b}</span>)}
+                {["24/7 enquiry line", "Independent local engineers", "Pricing confirmed on attendance", "Gas work: ask for registration"].map(b => <span key={b} className="badge">{b}</span>)}
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 14, color: "rgba(255,255,255,0.85)", fontSize: 13 }}>
                 <a className="trust-link" href="https://www.gassaferegister.co.uk/" target="_blank" rel="noreferrer">Gas Safe Register</a>
@@ -1198,8 +1225,10 @@ export default function App() {
             {renderLeadForm()}
           </div>
         </div>
-        <div className="mob-only" style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200, background: "linear-gradient(135deg, #0ea5e9, #6366f1)", padding: "15px 20px", textAlign: "center", boxShadow: "0 -4px 24px rgba(99,102,241,0.4)" }}>
-          <button type="button" onClick={() => scrollToForm()} style={{ color: "white", background: "none", border: "none", fontWeight: 800, fontSize: 17, cursor: "pointer" }}>Request a callback</button>
+        <div className="mob-only mob-call-bar">
+          <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_sticky_mobile", { page: pathname }); }}>
+            Call Now — {PHONE}
+          </a>
         </div>
       </section>
 
@@ -1302,7 +1331,7 @@ export default function App() {
                   </div>
                   <p className="desc">{svc.desc}</p>
                   <div className="service-showcase-footer">
-                    <span className="service-showcase-daily">Available <strong>Daily</strong></span>
+                    <span className="service-showcase-daily">Illustrative photo · independent engineers</span>
                     <button type="button" className="service-quote-btn" onClick={() => { trackEvent("service_card_quote", { service: svc.title, page: pathname }); scrollToForm(); }}>Get free quote</button>
                   </div>
                 </div>
@@ -1360,27 +1389,18 @@ export default function App() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* HOW THE SERVICE WORKS — trust / transparency (no fabricated reviews) */}
       <section style={{ padding: "80px 24px", background: "#f8fafc" }}>
-        <div style={{ maxWidth: 1580, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", maxWidth: 480, margin: "0 auto 48px" }}>
-            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Reviews</p>
-            <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(24px, 3vw, 38px)", color: "#0f172a" }}>What Coventry residents say</h2>
+        <div style={{ maxWidth: 840, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 13, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>Transparency</p>
+            <h2 className="syne-heading" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", fontWeight: 800, fontSize: "clamp(24px, 3vw, 38px)", color: "#0f172a" }}>How this introduction service works</h2>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 22 }}>
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="testi-card">
-                <StarRating count={t.stars} />
-                <p style={{ margin: "18px 0 22px", color: "#334155", lineHeight: 1.7, fontSize: 15, paddingTop: 6 }}>{t.text}</p>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg, #0ea5e9, #a855f7)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: 15 }}>{t.name[0]}</div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: 14, color: "#0f172a" }}>{t.name}</div>
-                    <div style={{ fontSize: 12, color: "#94a3b8" }}>📍 {t.location}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div style={{ background: "white", border: "1px solid #e2e8f0", borderRadius: 16, padding: "28px 24px", color: "#475569", fontSize: 15, lineHeight: 1.75 }}>
+            <p style={{ marginBottom: 14 }}><strong style={{ color: "#0f172a" }}>coventryplumbing247</strong> is a lead generation and customer introduction platform. We connect you with independent third-party plumbing engineers. We do not attend jobs ourselves and we are not the contractor who carries out the work.</p>
+            <p style={{ marginBottom: 14 }}>The attending engineer is responsible for assessment, quotation and any repair or installation. Always confirm charges, arrival window and scope directly with them before work starts.</p>
+            <p style={{ marginBottom: 14 }}>Availability depends on independent engineer capacity. Gas-related work must be handled by an appropriately registered engineer — ask them to confirm registration for the work they propose.</p>
+            <p style={{ margin: 0 }}>Questions or complaints: email <a href={`mailto:${OPERATOR_EMAIL}`} style={{ color: "#4f46e5", fontWeight: 700 }}>{OPERATOR_EMAIL}</a> or call <a href={`tel:${PHONE_TEL}`} onClick={() => { trackPhoneCallConversion(); trackEvent("click_to_call_trust_section", { page: pathname }); }} style={{ color: "#4f46e5", fontWeight: 700 }}>{PHONE}</a>.</p>
           </div>
         </div>
       </section>
@@ -1460,7 +1480,7 @@ export default function App() {
           coventryplumbing247 is a lead generation and introduction platform. We do not directly provide plumbing services. Any repair or installation contract is between the customer and the selected third-party engineer.
         </div>
         <div style={{ maxWidth: 1580, margin: "20px auto 0", borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: 18, fontSize: 11, color: "rgba(255,255,255,0.25)" }}>
-          © 2025 coventryplumbing247. All rights reserved.
+          © {new Date().getFullYear()} coventryplumbing247. All rights reserved.
         </div>
       </footer>
     </div>

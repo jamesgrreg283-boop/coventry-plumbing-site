@@ -6,7 +6,7 @@
 export const EMERGENCY_PLUMBER_FAQ = [
   {
     q: "How quickly can a plumber get to me in Coventry?",
-    a: "We aim to dispatch a local vetted plumber as quickly as possible. Many urgent Coventry call-outs are attended within 30–60 minutes, but timings depend on your postcode, time of day, traffic, and live availability.",
+    a: "Arrival depends on your postcode, time of day, traffic and whether an independent engineer is free. We do not guarantee a fixed arrival time. The engineer who calls you back will give a realistic window.",
   },
   {
     q: "Do you cover my postcode?",
@@ -275,8 +275,8 @@ export const TOWN_FAQS = {
 export const SERVICE_LANDINGS = {
   "/emergency-plumber-coventry": {
     townName: "Coventry",
-    h1Before: "Emergency Plumber Coventry – 24/7 Callouts in Under ",
-    h1Accent: "60 Minutes",
+    h1Before: "Emergency Plumber Coventry – ",
+    h1Accent: "24/7 Callouts",
     h1After: "",
     whenNeedBullets: [
       "Burst pipes and sudden water loss",
@@ -285,13 +285,13 @@ export const SERVICE_LANDINGS = {
       "No hot water or no heating",
       "Boiler breakdowns and pressure failures",
     ],
-    fastResponseBody: "If you need an emergency plumber Coventry residents can call day or night, this page is built for urgent situations only. We dispatch local vetted plumbers across City Centre, Earlsdon, Stoke, Binley, Walsgrave, Canley, Tile Hill, Allesley, Holbrooks and Cheylesmore, with regular coverage across CV1, CV2, CV3, CV4, CV5 and CV6. For urgent plumber Coventry jobs, we focus on quick triage, clear communication, and fast local dispatch.",
+    fastResponseBody: "If you need an emergency plumber Coventry residents can call day or night, this page is built for urgent situations. We introduce independent local engineers across City Centre, Earlsdon, Stoke, Binley, Walsgrave, Canley, Tile Hill, Allesley, Holbrooks and Cheylesmore, with regular coverage across CV1–CV6 when capacity allows. Arrival windows are confirmed by the engineer who calls you back — we do not guarantee a fixed arrival time.",
     whyChooseBullets: [
       "Emergency plumbing Coventry focus — this page is for urgent faults, not routine maintenance",
-      "24 hour plumber Coventry enquiry handling with local postcode routing",
-      "Local vetted plumbers dispatched quickly based on issue type and location",
-      "Average arrival target: 30–60 minutes when local capacity allows",
-      "Transparent pricing — the attending plumber confirms costs before work starts",
+      "24 hour enquiry handling with local postcode routing",
+      "Independent engineers introduced based on issue type and location",
+      "Honest availability — capacity varies by time of day and area",
+      "Transparent pricing — the attending engineer confirms costs before work starts",
     ],
     emergencyCtas: [
       { headline: "Call now for immediate help", subline: "Speak directly about your Coventry emergency — available 24/7." },
